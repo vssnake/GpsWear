@@ -1,0 +1,9 @@
+<resources>
+    <declare-styleable name="CustomProgressBar">
+        <attr name="exampleString" format="string" />
+        <attr name="exampleDimension" format="dimension" />
+        <attr name="bar_percent" format="integer"/>
+        <attr name="bar_color" format="color" />
+        <attr name="exampleDrawable" format="color|reference" />
+    </declare-styleable>
+</resources>

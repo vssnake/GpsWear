@@ -1,0 +1,120 @@
+package com.vssnake.gpswear;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.MotionEvent;
+
+import com.squareup.otto.Bus;
+import com.vssnake.gpswear.utils.LocationManager;
+import com.vssnake.gspshared.StacData;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by vssnake on 10/11/2014.
+ */
+public class MainPresenter{
+
+    private Context mContext;
+    private MainActivity mMainActivity;
+    LocationManager mLocationManager;
+
+    SharedPreferences settings;
+
+    public static Bus bus = new Bus();
+
+    private List<FragmentShowEvent> mFragmentShowEvent = new ArrayList<FragmentShowEvent>();
+
+
+    public MainPresenter(Context context){
+        // Restore preferences
+        settings = context.getSharedPreferences(StacData.PREFS_NAME, 0);
+
+
+        mContext = context;
+    }
+
+    public void attachMainActivity (final MainActivity mainActivity){
+        boolean fusionLocation = settings.getBoolean(StacData.REQUEST_MODE_LOCATION, false);
+        mLocationManager = new LocationManager(this,fusionLocation);
+        this.mMainActivity = mainActivity;
+
+
+        WearableCommunicator.locationHandler = new WearableCommunicator.LocationInterface() {
+            @Override
+            public void onModeLocationChange(final Boolean locationFusion) {
+                mainActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLocationManager.setFusionGps(locationFusion);
+                    }
+                });
+
+            }
+        };
+
+    }
+
+    public Context getContext() {
+        return mContext;
+    }
+
+    public void initLocation(){
+        mLocationManager.initPosition();
+    }
+
+    public void stopLocation(){
+        mLocationManager.stopPosition();
+    }
+
+    public boolean hasGps() {
+        return mLocationManager.hasGps();
+    }
+
+    public boolean hasFusionLocationEnabled(){ return mLocationManager.getFusionGps();}
+
+    public void addLocationHandler(com.vssnake.gpswear.utils.LocationManager.GpsDataChangeHandler handler){
+            mLocationManager.addEventInterface(handler);
+    }
+    public void removeLocationHandler(com.vssnake.gpswear.utils.LocationManager.GpsDataChangeHandler handler){
+        mLocationManager.removeEventHandler(handler);
+    }
+    public boolean getTypeLocation(){
+        return mLocationManager.getFusionGps();
+    }
+
+    public void disableMove (boolean disableMove){
+        mMainActivity.getGridViewPager().intercept = disableMove;
+
+    }
+
+
+    public void changeFragment(String nameFragment){
+        for (FragmentShowEvent f : mFragmentShowEvent){
+            f.monFragmentShow(nameFragment);
+        }
+    }
+    public void addChangeFragmentEvent(FragmentShowEvent fragment){
+        mFragmentShowEvent.add(fragment);
+    }
+
+
+    //endregion
+
+    //region InterfaceHandlers
+
+
+
+
+    public interface FragmentShowEvent{
+        void monFragmentShow(String nameFragment);
+    }
+
+
+    //endregion
+}
