@@ -57,7 +57,7 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
 
     private static final String TAG = "LocationManager";
 
-    private boolean mFusionGps = false;
+    private boolean mFusionGps = true;
     private static final String FUSIONLOCATION = "fusion";
     private static final String NATIVELOCATION = "native";
     private static final int UPDATE_POSITION_MS = 1000;
@@ -71,6 +71,7 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
     private Sensor mSensorAccelerometer;
     private GpsStatus mGpsStatus;
     private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
 
     private float[] mValuesAccelerometer = new float[3];
     private float[] mValuesMagneticField = new float[3];
@@ -175,6 +176,12 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
         return true;
     }
 
+    public void sendLastLocation(){
+        if (mLastLocation != null){
+            onLocationChanged(mLastLocation);
+        }
+    }
+
 
     private boolean stopNativeLocation(){
         mLocationManagerNative.removeUpdates(this);
@@ -212,6 +219,7 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
 
     @Override
     public void onLocationChanged(Location location) {
+        mLastLocation = location;
         for (int i = 0; mGpsDataChangeHandlers.size() > i;i++){
             mGpsDataChangeHandlers.get(i).onLocationChange(location);
         }

@@ -144,6 +144,29 @@
         </LinearLayout>
 
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#c8000000"
+        android:visibility="invisible">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="In the Menu Swipe Right for Previous Window"
+            android:id="@+id/textView14"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="30dp" />
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageView"
+            android:src="@drawable/right_double_arrow" />
+    </LinearLayout>
 
 </RelativeLayout>

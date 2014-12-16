@@ -242,6 +242,7 @@ public class MapView extends ViewGroup implements MapViewConstants, MapEventsRec
         if (zoomLvl != null) {
             float lvl = Float.parseFloat(zoomLvl);
             this.setZoom(lvl);
+
         } else {
             Log.d(TAG, "zoomLevel is not specified in XML.");
         }
@@ -2045,4 +2046,5 @@ public class MapView extends ViewGroup implements MapViewConstants, MapEventsRec
     public PointF getDefaultPinAnchor() {
         return mDefaultPinAnchor;
     }
+
 }

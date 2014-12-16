@@ -30,7 +30,7 @@ import butterknife.InjectView;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link GpsStatusFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * create an instance of this fragment_gps_status.
  */
 public class GpsStatusFragment extends Fragment implements MainPresenter.FragmentShowEvent{
 
@@ -60,8 +60,8 @@ public class GpsStatusFragment extends Fragment implements MainPresenter.Fragmen
 
     /**
      * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     * @return A new instance of fragment GpsStatusFragment.
+     * this fragment_gps_status using the provided parameters.
+     * @return A new instance of fragment_gps_status GpsStatusFragment.
      */
     public static GpsStatusFragment newInstance() {
         GpsStatusFragment fragment = new GpsStatusFragment();
@@ -81,23 +81,29 @@ public class GpsStatusFragment extends Fragment implements MainPresenter.Fragmen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the layout for this fragment_gps_status
         View view;
         //if(((InsetActivity)getActivity()).isRound()){
           //  view = inflater.inflate(R.layout.fragment_gps_status_round,container,false);
        // }else{
-           view = inflater.inflate(R.layout.fragment_gps_status_rect,container,false);
+           view = inflater.inflate(R.layout.fragment_gps_status,container,false);
         //}
-        ButterKnife.inject(GpsStatusFragment.this,view);
-        presenter.attach(this);
-        presenter.initGps();
+
+
+        WatchViewStub stub = (WatchViewStub) view.findViewById(R.id.watch_view_stub);
+        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
+            @Override public void onLayoutInflated(WatchViewStub stub) {
+                // Now you can access your views
+                ButterKnife.inject(GpsStatusFragment.this,stub);
+
+                presenter.attach(GpsStatusFragment.this);
+
+                presenter.resume();
 
 
 
-
-
-
-
+            }
+        });
 
 
         return view;
@@ -186,6 +192,11 @@ public class GpsStatusFragment extends Fragment implements MainPresenter.Fragmen
 
     @Override
     public void monFragmentShow(String nameFragment) {
+        if (nameFragment.equals(this.getClass().getName())){
+            presenter.resume();
 
+
+        }else
+        presenter.pause();
     }
 }

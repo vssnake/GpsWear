@@ -3,11 +3,35 @@
                 android:layout_height="fill_parent" android:keepScreenOn="true"
                 xmlns:android="http://schemas.android.com/apk/res/android">
     <com.vssnake.gpswear.GridViewPagerNew android:id="@+id/main_pager" android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+      android:layout_height="fill_parent"
                                                  xmlns:android="http://schemas.android.com/apk/res/android" />
     <LinearLayout android:id="@+id/main_page_indicator"
         android:visibility="invisible" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="10.0dip" android:layout_alignParentBottom="true" android:layout_centerHorizontal="true">
         <ImageView android:id="@+id/main_indicator_0" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginRight="5.0dip" android:src="@drawable/pagerdot" />
         <ImageView android:id="@+id/main_indicator_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/pagercircle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#50fdffff"
+        android:visibility="invisible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Swipe  Right to Gps Info"
+            android:id="@+id/textView14"
+            android:layout_gravity="center"
+            android:gravity="center" />
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/imageView"
+            android:src="@drawable/right_double_arrow" />
     </LinearLayout>
 </RelativeLayout>

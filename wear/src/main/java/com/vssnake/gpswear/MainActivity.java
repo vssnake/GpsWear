@@ -1,9 +1,11 @@
 package com.vssnake.gpswear;
 
 import android.app.Activity;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.wearable.activity.InsetActivity;
 import android.support.wearable.view.GridViewPager;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
@@ -12,6 +14,8 @@ import android.widget.ImageView;
 import com.vssnake.gpswear.config.GpsWearApp;
 import com.vssnake.gpswear.fragment.view.GpsStatusFragment;
 import com.vssnake.gpswear.fragment.view.MicroMapFragment;
+
+import java.util.TimerTask;
 
 import javax.inject.Inject;
 
@@ -73,7 +77,11 @@ public class MainActivity extends Activity
     protected void onPause() {
         super.onPause();
         presenter.stopLocation();
+    }
 
+    protected void onDestroy(){
+        super.onDestroy();
+        presenter.stopLocation();
     }
 
 
@@ -115,6 +123,7 @@ public class MainActivity extends Activity
         presenter.addChangeFragmentEvent(gpsStatusFragment);
         presenter.addChangeFragmentEvent(microMapFragment);
 
+        mGridViewPager.setAdapter(mLocalPagerAdapter);
 
 
         mGridViewPager.setOnPageChangeListener(new GridViewPager.OnPageChangeListener() {
@@ -136,7 +145,8 @@ public class MainActivity extends Activity
         });
 
 
-        mGridViewPager.setAdapter(mLocalPagerAdapter);
+
+
 
 
     }
@@ -159,8 +169,11 @@ public class MainActivity extends Activity
     }
 
 
-            public GridViewPagerNew getGridViewPager() {
-                System.out.println("");
-                return mGridViewPager;
-            }
-        }
+    public GridViewPagerNew getGridViewPager() {
+        System.out.println("");
+        return mGridViewPager;
+    }
+
+
+}
+

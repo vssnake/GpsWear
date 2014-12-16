@@ -40,7 +40,7 @@ public class MainPresenter{
     }
 
     public void attachMainActivity (final MainActivity mainActivity){
-        boolean fusionLocation = settings.getBoolean(StacData.REQUEST_MODE_LOCATION, false);
+        boolean fusionLocation = settings.getBoolean(StacData.REQUEST_MODE_LOCATION, true);
         mLocationManager = new LocationManager(this,fusionLocation);
         this.mMainActivity = mainActivity;
 
@@ -109,7 +109,9 @@ public class MainPresenter{
     //region InterfaceHandlers
 
 
-
+    public void sendLastLocation(){
+        mLocationManager.sendLastLocation();
+    }
 
     public interface FragmentShowEvent{
         void monFragmentShow(String nameFragment);

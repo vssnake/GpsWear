@@ -16,6 +16,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -42,16 +43,27 @@ import butterknife.InjectView;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MicroMapFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * create an instance of this fragment_gps_status.
  */
 public class MicroMapFragment extends Fragment implements MainPresenter.FragmentShowEvent{
 
+    private static final String TAG ="MicroMapFragment";
+
+
     @InjectView(R.id.mp_mapview)
     com.mapbox.mapboxsdk.views.MapView mMapView;
-    /*@InjectView(R.id.mp_menuLayout)
+    @InjectView(R.id.mp_menu)
     LinearLayout mMenuLayout;
-    @InjectView(R.id.mp_button)
-    Button mCenterButton;*/
+    @InjectView(R.id.mp_main_layout)
+    RelativeLayout mMainLayout;
+    @InjectView(R.id.mp_show_position)
+    Button mShowPositionButton;
+    @InjectView(R.id.mp_motion_tracking)
+    Button mMotionTrackingButton;
+    @InjectView(R.id.mp_return)
+    Button mReturnButton;
+    @InjectView (R.id.mp_frame_layout)
+    FrameLayout mFrameLayout;
 
 
     private ImageView viewYouAreHere;
@@ -86,7 +98,7 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the layout for this fragment_gps_status
         View view = inflater.inflate(R.layout.fragment_micro_map, container, false);
 
         ButterKnife.inject(this, view);
@@ -97,18 +109,90 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
         mMapView.setMaxZoomLevel(mMapView.getTileProvider().getMaximumZoomLevel());
         //mv.setCenter(mv.getTileProvider().getCenterCoordinate());
         mMapView.setZoom(0);
+        mMapView.setMaxZoomLevel(18);
+        mMapView.setUserLocationRequiredZoom(18);
         mMapView.setDiskCacheEnabled(true);
         currentMap = getString(R.string.streetMapId);
 
-        mMapView.loadFromGeoJSONURL("https://gist.githubusercontent.com/tmcw/10307131/raw/21c0a20312a2833afeee3b46028c3ed0e9756d4c/map.geojson");
+       // mMapView.loadFromGeoJSONURL("https://gist.githubusercontent.com/tmcw/10307131/raw/21c0a20312a2833afeee3b46028c3ed0e9756d4c/map.geojson");
         GpsLocationProvider provider = new GpsLocationProvider(presenter.getMainPresenter().getContext());
-
-        mUserLocation = new UserLocationOverlay(provider,mMapView);
+        mMapView.setUserLocationEnabled(true);
+        mUserLocation = mMapView.getUserLocationOverlay();
+        //mUserLocation = new UserLocationOverlay(provider,mMapView);
 
         mUserLocation.setDrawAccuracyEnabled(true);
-        mMapView.getOverlays().add(mUserLocation);
+
+        mMapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.NONE);
 
 
+
+        reloadTrackingButton();
+
+
+        mGestureDetector = new GestureDetector(getActivity().getApplicationContext(), new GestureDetector.SimpleOnGestureListener(){
+            @Override
+            public void onLongPress(MotionEvent e) {
+                Log.i(TAG, "onLongPress");
+                reloadTrackingButton();
+                changeVisibilityMenu();
+
+
+
+            }
+        });
+
+
+        mFrameLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mGestureDetector.onTouchEvent(event);
+                if (mMenuLayout.getVisibility() == View.INVISIBLE){
+                    return mMapView.onTouchEvent(event);
+                }
+                return false;
+            }
+        });
+
+
+        mReturnButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onReturnButtonClicked();
+            }
+        });
+        mMotionTrackingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserLocationOverlay.TrackingMode tracking = mUserLocation.getTrackingMode();
+                switch (tracking){
+                    case FOLLOW:
+                    case FOLLOW_BEARING:
+                        mMapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.NONE);
+
+                        break;
+                    case NONE:
+                        mMapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
+                        break;
+                }
+                reloadTrackingButton();
+            }
+        });
+
+
+
+        mShowPositionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mMapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.NONE);
+                mMapView.goToUserLocation(true);
+
+                presenter.onGoToPositionClicked();
+
+                reloadTrackingButton();
+                changeVisibilityMenu();
+            }
+        });
 
 
 
@@ -133,8 +217,6 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
         viewYouAreHere.setImageResource(R.drawable.youarehere2);
 
 
-
-
         mMapView.setDecoder(presenter.getDecoder());
 
         mMapView.setSize(StacData.MAP_SIZE, StacData.MAP_SIZE);
@@ -146,6 +228,17 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
         presenter.attach(this);
 
         return view;
+    }
+
+    public void changeVisibilityMenu(){
+        switch (mMenuLayout.getVisibility()){
+            case View.VISIBLE:
+                mMenuLayout.setVisibility(View.INVISIBLE);
+                break;
+            case View.INVISIBLE:
+                mMenuLayout.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 
     @Override
@@ -214,7 +307,21 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
     }
 
 
+    private void reloadTrackingButton(){
+        UserLocationOverlay.TrackingMode tracking = mUserLocation.getTrackingMode();
+        String motionTrackingString =
+                MicroMapFragment.this.getResources().getString(R.string.motion_tracking);
+        switch (tracking){
+            case FOLLOW:
+            case FOLLOW_BEARING:
+                mMotionTrackingButton.setText(motionTrackingString + " | ON");
+                break;
+            case NONE:
+                mMotionTrackingButton.setText(motionTrackingString + " | OFF");
 
+                break;
+        }
+    }
 
     public ImageView getViewYouAreHere() {
         return viewYouAreHere;
@@ -222,10 +329,13 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
 
     @Override
     public void monFragmentShow(String nameFragment) {
-        if (nameFragment.equals(this.getClass().getName())){
+        if (nameFragment.equals(this.getClass().getName())) {
             presenter.resume();
-        }else
+
+        } else{
+            mMenuLayout.setVisibility(View.INVISIBLE);
             presenter.pause();
+    }
     }
 
     public com.mapbox.mapboxsdk.views.MapView getMapView() {

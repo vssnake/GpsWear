@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Android Wear Gps</string>
+    <string name="app_name">Wear Maps Gps Info</string>
 	<string name="mapbox">Mapbox</string>
     <string name="menu_examplemaps">Example Maps</string>
 	<string name="reportBugs">Report Bugs</string>
+
 
 	<!-- Map Labels -->
 	<string name="satellite">Satellite</string>
@@ -25,5 +26,8 @@
 	<string name="spaceShipMapId">examples.3hqcl3di</string>
 
     <string name="fussionLocationEnable">Fusion Location</string>
+
+    <string name="connecting">Connecting to SmartWatch</string>
+    <string name="connected">SmartWatch Connected</string>
 
 </resources>

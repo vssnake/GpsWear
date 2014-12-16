@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 
 import com.vssnake.gpswear.MainPresenter;
@@ -129,8 +130,10 @@ public class MicroMapPresenter extends BasicPresenter{
 
         getMainPresenter().disableMove(true);
 
-      //  mTimer = new Timer();
-      // mTimer.scheduleAtFixedRate(new PingTask(), 500, 2000);
+        getMainPresenter().sendLastLocation();
+
+       //mTimer = new Timer();
+       //mTimer.scheduleAtFixedRate(new PingTask(), 500, 1000);
     }
     public void pause(){
         if(D) Log.d(TAG, "onPause");
@@ -149,22 +152,43 @@ public class MicroMapPresenter extends BasicPresenter{
     }
 
 
+    public void onReturnButtonClicked(){
+        mFragment.changeVisibilityMenu();
+        getMainPresenter().disableMove(true);
+    }
+    public void onGoToPositionClicked(){
+        getMainPresenter().disableMove(true);
+    }
+    public void onMotionTrackingClicked(){
 
-    void onMessageLocation(Location location){
+    }
+
+    void onMessageLocation(final Location location){
            // mFragment.getUserLocation().onLocationChanged(location,null);
-        mFragment.getUserLocation().mIsLocationEnabled = true;
-        mFragment.getUserLocation().onLocationChanged(location,null);
+        Handler mainHandler = new Handler(mainActivityPresenter.getContext().getMainLooper());
+
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mFragment.getUserLocation().mIsLocationEnabled = true;
+                mFragment.getUserLocation().onLocationChanged(location,null);
+
+            }
+        }; // This is your code
+        mainHandler.post(myRunnable);
+
     }
 
 
-
+    double latitude = 43.3177118;
+    double longitude = -3.0206342;
 
     class PingTask extends TimerTask {
         public void run() {
             Log.d(TAG, "PingTask executed.");
             Location location = new Location("");
-            location.setLatitude(43.3177118);
-            location.setLongitude(-3.0206342);
+            location.setLatitude(latitude +=0.0001);
+            location.setLongitude(longitude+=0.0001);
             location.setAccuracy(50);
             onMessageLocation(location);
            // onMessageLocation(43.3177118,-3.0206342);

@@ -39,27 +39,13 @@ public class GridViewPagerNew extends GridViewPager{
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         final int action = MotionEventCompat.getActionMasked(ev);
         if (intercept == true){
-            return gestureScanner.onTouchEvent(ev);
+            boolean result = gestureScanner.onTouchEvent(ev);
+            return result;
         }else{
             return super.onInterceptTouchEvent(ev);
         }
-       //
-        /*if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP){
-            if (intercept == true){
-                intercept = false;
-            }
-        }
-        // Always handle the case of the touch gesture being complete.
-        if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_MOVE) {
-            String r = "result";
-            // Release the scroll.
-            if (intercept == true){
-                return false;
-            }
 
-        }*/
 
-      //  return super.onInterceptTouchEvent(ev);
 
     }
 
@@ -105,7 +91,10 @@ public class GridViewPagerNew extends GridViewPager{
             @Override
             public void onLongPress(MotionEvent e) {
                 Log.i(TAG, "onLongPress");
-            }
+                if (intercept == true){
+                    intercept = false;
+                }
+                         }
 
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2,
@@ -125,7 +114,6 @@ public class GridViewPagerNew extends GridViewPager{
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 if (intercept == true){
-                    intercept = false;
                     return false;
                 }
                 return true;

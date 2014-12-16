@@ -38,9 +38,9 @@ public class WearableCommunicator extends TeleportService{
 
             DataMap dataMap = new DataMap();
             dataMap.putBoolean(StacData.REQUEST_MODE_LOCATION_DATA,
-                    settings.getBoolean(StacData.REQUEST_MODE_LOCATION,false));
+                    settings.getBoolean(StacData.REQUEST_MODE_LOCATION,true));
             syncBoolean(StacData.REQUEST_MODE_LOCATION,
-                    settings.getBoolean(StacData.REQUEST_MODE_LOCATION, false));
+                    settings.getBoolean(StacData.REQUEST_MODE_LOCATION, true));
 
             sendMessage(StacData.REQUEST_MODE_LOCATION_DATA,dataMap.toByteArray());
 
@@ -69,7 +69,7 @@ public class WearableCommunicator extends TeleportService{
 
     @Subscribe
     public void answerAvailable(LocationInitialize event) {
-        boolean fusionLocation = settings.getBoolean(StacData.REQUEST_MODE_LOCATION,false);
+        boolean fusionLocation = settings.getBoolean(StacData.REQUEST_MODE_LOCATION,true);
         DataMap dataMap = new DataMap();
         dataMap.putBoolean(StacData.REQUEST_MODE_LOCATION_DATA,fusionLocation);
         sendMessage(StacData.REQUEST_MODE_LOCATION_DATA,dataMap.toByteArray());

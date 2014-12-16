@@ -471,7 +471,7 @@ public class UserLocationOverlay extends SafeDrawOverlay implements Snappable, M
         mLatLng = new LatLng(mLocation);
         //if goToMyPosition return false, it means we are already there
         //which means we have to invalidate ourselves to make sure we are redrawn
-        if (!isFollowLocationEnabled() || !goToMyPosition(true)) {
+        if (!isFollowLocationEnabled()  || !goToMyPosition(false)) {
             invalidate();
         }
     }

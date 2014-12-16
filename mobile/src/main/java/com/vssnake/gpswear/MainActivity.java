@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -30,6 +33,8 @@ import com.mariux.teleport.lib.TeleportClient;
 import com.vssnake.gspshared.StacData;
 
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -39,7 +44,11 @@ public class MainActivity extends ActionBarActivity {
     private String currentMap = null;
     private TeleportClient mTeleportClient;
 
+    Timer mTimer;
+
     CheckBox mCheckBox;
+
+    TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +60,19 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         mCheckBox = (CheckBox)findViewById(R.id.checkBox);
 
+        mTextView = (TextView) findViewById(R.id.main_connect_status);
+
         mTeleportClient = new TeleportClient(this);
 
 
         mCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                mTextView.setText(R.string.connecting);
+                mTextView.setTextColor(getResources().getColor(R.color.red));
+
+                mCheckBox.setEnabled(true);
                 mCheckBox.setEnabled(false);
                 sendModeFusion(mCheckBox.isChecked());
 
@@ -80,11 +96,15 @@ public class MainActivity extends ActionBarActivity {
     protected void onStart() {
         super.onStart();
         mTeleportClient.connect();
+        mTimer = new Timer();
+        mTimer.scheduleAtFixedRate(new PingTask(), 500, 1000);
+
         mTeleportClient.setOnGetMessageCallback(new onMessage());
         mTeleportClient.addConnectionCallbacks(new TeleportClient.OnConnectionCallback() {
             @Override
             public void onConnected(Bundle bundle) {
-                mTeleportClient.sendMessage(StacData.REQUEST_MODE_LOCATION,null);
+                mTimer.scheduleAtFixedRate(new PingTask(), 500, 1000);
+               // mTeleportClient.sendMessage(StacData.REQUEST_MODE_LOCATION,null);
 
             }
 
@@ -93,6 +113,7 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
+
 
 
 
@@ -121,11 +142,16 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onCallback(String path, byte[] data) {
             if (path.equals(StacData.REQUEST_MODE_LOCATION_DATA)){
+                mTimer.cancel();
                 DataMap dataMap = DataMap.fromByteArray(data);
                 final boolean fusionLocation = dataMap.getBoolean(StacData.REQUEST_MODE_LOCATION_DATA);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+
+                        mTextView.setText(R.string.connected);
+                        mTextView.setTextColor(getResources().getColor(R.color.blue));
+
                         mCheckBox.setEnabled(true);
                         mCheckBox.setChecked(fusionLocation);
                     }
@@ -137,11 +163,22 @@ public class MainActivity extends ActionBarActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        mTextView.setText(R.string.connected);
+                        mTextView.setTextColor(getResources().getColor(R.color.blue));
+
                         mCheckBox.setEnabled(true);
                         mCheckBox.setChecked(fusionLocation);
                     }
                 });
             }
+        }
+    }
+
+    //mTimer = new Timer();
+    //mTimer.scheduleAtFixedRate(new PingTask(), 500, 1000);
+    class PingTask extends TimerTask {
+        public void run() {
+            mTeleportClient.sendMessage(StacData.REQUEST_MODE_LOCATION,null);
         }
     }
 

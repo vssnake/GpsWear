@@ -2,19 +2,49 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
-    tools:context="com.vssnake.gpswear.TestActivity">
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/mp_menu"
-        android:visibility="invisible"></LinearLayout>
+    tools:context="com.vssnake.gpswear.TestActivity"
+    android:id="@+id/mp_main_layout">
 
     <com.mapbox.mapboxsdk.views.MapView
         android:id="@+id/mp_mapview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        mapbox:mapid="@string/streetMapId"/>
+        mapbox:mapid="@string/streetMapId"
+        android:visibility="visible" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/mp_frame_layout"></FrameLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/mp_menu"
+        android:visibility="invisible"
+        android:gravity="center">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/show_position"
+            android:id="@+id/mp_show_position"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/motion_tracking"
+            android:id="@+id/mp_motion_tracking" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/return_map"
+            android:id="@+id/mp_return"
+            android:visibility="visible" />
+    </LinearLayout>
+
 </RelativeLayout>
 

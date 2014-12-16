@@ -20,6 +20,8 @@ public class GpsStatusPresenter extends BasicPresenter {
 
     GpsStatusFragment mFragment;
 
+    LocationManager.GpsDataChangeHandler mLocationHandler;
+
     public GpsStatusPresenter(MainPresenter mainPresenter) {
         super(mainPresenter);
     }
@@ -37,7 +39,13 @@ public class GpsStatusPresenter extends BasicPresenter {
         }else{
             mFragment.getTitle().setText(R.string.gps_searching);
         }
-        mainActivityPresenter.addLocationHandler(new LocationManager.GpsDataChangeHandler() {
+
+       // mainActivityPresenter.initLocation();
+    }
+
+    public void resume(){
+        initGps();
+        mLocationHandler = new  LocationManager.GpsDataChangeHandler() {
             @Override
             public void onLocationChange(Location location) {
                 if (location == null){
@@ -91,8 +99,8 @@ public class GpsStatusPresenter extends BasicPresenter {
                 int maxSatellites = 0; int satellitesUsed = 0;
                 int cont = 1;
                 Iterable<GpsSatellite> satelliteIterable = gpsStatus.getSatellites();
-               for (Iterator<GpsSatellite> iter = satelliteIterable.iterator(); iter.hasNext();){
-                   GpsSatellite gpsSatellite = iter.next();
+                for (Iterator<GpsSatellite> iter = satelliteIterable.iterator(); iter.hasNext();){
+                    GpsSatellite gpsSatellite = iter.next();
                     calculateSatelliteData(
                             gpsSatellite.getSnr(),
                             gpsSatellite.usedInFix(),
@@ -101,8 +109,8 @@ public class GpsStatusPresenter extends BasicPresenter {
                     if (gpsSatellite.usedInFix()){
                         satellitesUsed++;
                     }
-                   maxSatellites ++;
-               }
+                    maxSatellites ++;
+                }
                 if (satellitesUsed == 0){
                     mFragment.getTitle().setText(R.string.gps_searching);
                 }
@@ -114,8 +122,14 @@ public class GpsStatusPresenter extends BasicPresenter {
             public void onNorthChange(float degrees) {
 
             }
-        });
-       // mainActivityPresenter.initLocation();
+        };
+
+        mainActivityPresenter.addLocationHandler(mLocationHandler);
+
+        getMainPresenter().sendLastLocation();
+    }
+    public void pause(){
+        mainActivityPresenter.removeLocationHandler(mLocationHandler);
     }
 
     private void calculateSatelliteData(float SNR,boolean fix,int position){
