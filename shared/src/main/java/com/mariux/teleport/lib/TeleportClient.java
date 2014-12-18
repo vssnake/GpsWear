@@ -447,8 +447,7 @@ public class TeleportClient implements DataApi.DataListener,
         protected Bitmap doInBackground(Object... params) {
             InputStream assetInputStream = Wearable.DataApi.getFdForAsset(
                     (GoogleApiClient) params[1], (Asset) params[0]).await().getInputStream();
-            Bitmap bitmap = BitmapFactory.decodeStream(assetInputStream);
-            return bitmap;
+            return BitmapFactory.decodeStream(assetInputStream);
 
         }
 
@@ -456,8 +455,6 @@ public class TeleportClient implements DataApi.DataListener,
         protected abstract void onPostExecute(Bitmap bitmap);
 
     }
-
-    ;
 
 
 //    /**

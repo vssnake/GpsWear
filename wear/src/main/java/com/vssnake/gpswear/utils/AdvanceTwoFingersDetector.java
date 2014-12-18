@@ -3,6 +3,9 @@ package com.vssnake.gpswear.utils;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by vssnake on 17/12/2014.
  */
@@ -14,6 +17,8 @@ public abstract class AdvanceTwoFingersDetector {
     private static final long LONG_PRESS_TIME = ViewConfiguration.getLongPressTimeout();
     private long mTwoFingerPressTime;
 
+    Timer mTimer;
+
     public AdvanceTwoFingersDetector(){}
     private void reset(long time) {
         mFirstDownTime = time;
@@ -23,8 +28,20 @@ public abstract class AdvanceTwoFingersDetector {
 
     public boolean onTouchEvent(MotionEvent event) {
         switch(event.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_POINTER_DOWN:
                 if(mFirstDownTime == 0 || event.getEventTime() - mFirstDownTime > TIMEOUT)
+
+                    if (event.getPointerCount() == 2){
+                        mTimer = new Timer();
+                        mTimer.scheduleAtFixedRate(new TimerTask() {
+                            @Override
+                            public void run() {
+                                mTimer.cancel();
+                                onTwoFingerLongPress();
+                            }
+                        }, 500, 500);
+                    }
+
                     reset(event.getDownTime());
                 break;
             case MotionEvent.ACTION_POINTER_UP:
@@ -35,10 +52,12 @@ public abstract class AdvanceTwoFingersDetector {
                     mFirstDownTime = 0;
                 break;
             case MotionEvent.ACTION_UP:
+
+                mTimer.cancel();
                 if(!mSeparateTouches)
                     mSeparateTouches = true;
                 if (mTwoFingerTapCount == 1  && mTwoFingerPressTime >= LONG_PRESS_TIME){
-                    return onTwoFingerLongPress();
+                    //return onTwoFingerLongPress();
                 }
                 else if(mTwoFingerTapCount == 2 && event.getEventTime() - mFirstDownTime < TIMEOUT) {
                     onTwoFingerDoubleTap();

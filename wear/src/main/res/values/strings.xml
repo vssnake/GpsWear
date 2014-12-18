@@ -7,11 +7,9 @@
     <string name="gps_found">Gps found</string>
     <string name="gps_fusion_found">Location Fusion Acquired</string>
 
-    <string name="title_activity_test">TestActivity</string>
     <string name="action_settings">Settings</string>
     <string name="streetMapId">examples.map-i87786ca</string>
     <string name="no_data">No data</string>
-    <string name="satellites">Satellites</string>
 
 
     <string name="show_position">Show position</string>

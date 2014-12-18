@@ -26,22 +26,15 @@ public class MicroMapPresenter extends BasicPresenter{
     public static final boolean D = true;
     public static final String TAG ="MicroMapPresenter";
 
-    private File mCacheDir = null;
+    volatile File mCacheDir = null;
 
     HashSet<String> inProgressRequests = new HashSet<String>();
 
     final double mapR = (int)(StacData.MIDDLE_MAP/Math.PI/StacData.HEIGHT_BITMAP);
 
-
-
     MicroMapFragment mFragment;
 
     Timer mTimer = new Timer();
-
-
-
-    public int pixelX = 0;
-    public int pixelY = 0;
 
 
     public MicroMapPresenter(MainPresenter mainPresenter) {
@@ -63,28 +56,7 @@ public class MicroMapPresenter extends BasicPresenter{
             if(!mCacheDir.mkdir()) Log.e(TAG, "Failed to create external storage directory");
         }
 
-
-
         mFragment = (MicroMapFragment)fragment;
-
-      /*  getMainPresenter().setMotionEvent(new MainPresenter.MapMotionEvent() {
-            @Override
-            public boolean onMotionEvent(MotionEvent event) {
-                if(mFragment.mGestureDetector.onTouchEvent(event)){
-                    return true;
-                }
-
-                if (mFragment.disableMove){
-                 //   mFragment.getMapView().dispatchTouchEvent(event);
-                    return true;
-                }
-               return false;
-            }
-        });*/
-
-
-
-
     }
 
     public void detach(){
@@ -115,11 +87,11 @@ public class MicroMapPresenter extends BasicPresenter{
            @Override
            public void onNorthChange(float degrees) {
 
-               //  if (D) Log.d(TAG,"North Pole " + degrees);
+               /*  if (D) Log.d(TAG,"North Pole " + degrees);
                if (lastRotation - degrees > 5
                        || 5 < degrees - lastRotation) {
-                   // mFragment.getViewYouAreHere().setRotation(degrees);
-               }
+                    mFragment.getViewYouAreHere().setRotation(degrees);
+               }*/
                lastRotation = degrees;
 
            }
@@ -147,9 +119,6 @@ public class MicroMapPresenter extends BasicPresenter{
         //mTimer.cancel();
     }
 
-    public void centerMap(){
-        mFragment.frameTo(pixelX, pixelY);
-    }
 
 
     public void onReturnButtonClicked(){

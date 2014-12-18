@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class FragmentGridAdapter extends FragmentGridPagerAdapter{
 
-    private final Context mContext;
+    volatile Context mContext;
 
     List<Fragment> mFragments;
 

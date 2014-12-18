@@ -40,12 +40,11 @@ public class GridViewPagerNew extends GridViewPager{
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         final int action = MotionEventCompat.getActionMasked(ev);
-        if (intercept == true){
+        if (intercept){
             if (multiTouchListener.onTouchEvent(ev)){
                 return true;
             }
-            boolean result = gestureScanner.onTouchEvent(ev);
-            return result;
+            return gestureScanner.onTouchEvent(ev);
         }else{
             return super.onInterceptTouchEvent(ev);
         }
@@ -66,7 +65,7 @@ public class GridViewPagerNew extends GridViewPager{
             @Override
             public boolean onTwoFingerLongPress() {
                 Log.i(TAG,"onTwoFingersLongPress");
-                if (intercept == true){
+                if (intercept){
                     intercept = false;
                     return false;
                 }
@@ -78,39 +77,28 @@ public class GridViewPagerNew extends GridViewPager{
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 Log.i(TAG, "onDoubleTap");
-                if (intercept == true){
-                    return false;
-                }
-                return true;
+                return intercept == false;
+
             }
 
 
             @Override
             public boolean onDoubleTapEvent(MotionEvent e) {
                 Log.i(TAG, "onDoubleTapEvent");
-                if (intercept == true){
-                    return false;
-                }
-                return true;
+                return intercept == false;
             }
 
             @Override
             public boolean onDown(MotionEvent e) {
                 Log.i(TAG, "onDown");
-                if (intercept == true){
-                    return false;
-                }
-                return true;
+                return intercept == false;
             }
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2,
                                    float velocityX, float velocityY) {
                 Log.i(TAG, "onFling");
-                if (intercept == true){
-                    return false;
-                }
-                return true;
+                return intercept == false;
             }
 
 
@@ -118,10 +106,7 @@ public class GridViewPagerNew extends GridViewPager{
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                     float distanceX, float distanceY) {
-                if (intercept == true){
-                    return false;
-                }
-                return true;
+                return intercept == false;
 
             }
 
@@ -129,19 +114,13 @@ public class GridViewPagerNew extends GridViewPager{
 
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                if (intercept == true){
-                    return false;
-                }
-                return true;
+                return intercept == false;
             }
 
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 Log.i(TAG, "onSingleTapUp");
-                if (intercept == true){
-                    return false;
-                }
-                return true;
+                return intercept == false;
             }
 
         });

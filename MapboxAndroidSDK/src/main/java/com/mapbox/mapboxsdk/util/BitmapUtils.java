@@ -28,10 +28,11 @@ public class BitmapUtils {
     }
 
     public static boolean isCacheDrawableExpired(Drawable drawable) {
-        if (drawable != null && drawable.getState() == EXPIRED) {
+        return (drawable != null && drawable.getState() == EXPIRED);
+        /*if (drawable != null && drawable.getState() == EXPIRED) {
             return true;
         }
-        return false;
+        return false;*/
     }
 
     public static void setCacheDrawableExpired(CacheableBitmapDrawable drawable) {

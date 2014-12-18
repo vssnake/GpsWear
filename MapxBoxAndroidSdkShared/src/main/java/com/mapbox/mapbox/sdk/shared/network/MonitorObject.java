@@ -8,7 +8,7 @@ import android.os.Handler;
 
 public class MonitorObject {
 
-    String myMonitorObject = "";
+    final String myMonitorObject = "";
     boolean wasSignalled = false;
     boolean timeOut = true;
     Handler handler;

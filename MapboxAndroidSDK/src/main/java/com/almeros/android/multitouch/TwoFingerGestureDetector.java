@@ -29,8 +29,8 @@ import android.view.ViewConfiguration;
 public abstract class TwoFingerGestureDetector extends BaseGestureDetector {
 
     private final float mEdgeSlop;
-    private float mRightSlopEdge;
-    private float mBottomSlopEdge;
+    volatile float mRightSlopEdge;
+    volatile float mBottomSlopEdge;
 
     protected float mPrevFingerDiffX;
     protected float mPrevFingerDiffY;

@@ -2,9 +2,7 @@
 <resources>
 
     <string name="app_name">Wear Maps Gps Info</string>
-	<string name="mapbox">Mapbox</string>
     <string name="menu_examplemaps">Example Maps</string>
-	<string name="reportBugs">Report Bugs</string>
 
 
 	<!-- Map Labels -->

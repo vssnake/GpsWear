@@ -41,7 +41,7 @@ public class MainActivity extends Activity
 
     FragmentGridAdapter mLocalPagerAdapter;
 
-    private GestureDetector mDetector;
+    volatile GestureDetector mDetector;
 
     @Inject MainPresenter presenter;
 

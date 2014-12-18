@@ -1,18 +1,14 @@
 package com.vssnake.gpswear;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.google.android.gms.common.data.FreezableUtils;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.MessageEvent;
 import com.mapbox.mapbox.sdk.shared.constants.BlackHoleConstants;
 import com.mapbox.mapboxsdk.server.util.BlackHoleServiceSync;
 import com.mapbox.mapboxsdk.server.util.NetworkUtils;
-import com.vssnake.gspshared.StacData;
 
 
 import java.io.ByteArrayOutputStream;
@@ -41,25 +37,7 @@ public class BlackHoleService extends BlackHoleServiceSync {
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
 
-        final List<DataEvent> events = FreezableUtils.freezeIterable(dataEvents);
 
-        for (DataEvent event : events) {
-
-            if (event.getType() == DataEvent.TYPE_CHANGED) {
-
-
-
-
-
-
-
-
-
-
-            } else if (event.getType() == DataEvent.TYPE_DELETED) {
-                Log.d("DataItem Deleted", event.getDataItem().toString());
-            }
-        }
     }
 
     @Override
@@ -78,7 +56,7 @@ public class BlackHoleService extends BlackHoleServiceSync {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
                     byte[] buffer = new byte[16024];
-                    int read = 0;
+                    int read;
                     while ((read = is.read(buffer, 0, buffer.length)) != -1) {
                         baos.write(buffer, 0, read);
                     }

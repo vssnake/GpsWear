@@ -35,7 +35,6 @@ public class GpsStatusPresenter extends BasicPresenter {
     public void initGps(){
         if (!getMainPresenter().hasGps()){
             mFragment.getTitle().setText(R.string.gps_not_found);
-            return;
         }else{
             mFragment.getTitle().setText(R.string.gps_searching);
         }

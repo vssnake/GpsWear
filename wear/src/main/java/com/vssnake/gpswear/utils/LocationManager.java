@@ -64,7 +64,7 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
     private String typeSensorOn = "";
 
     private android.location.LocationManager mLocationManagerNative;
-    private LocationRequest mLocationManagerFusion;
+    volatile LocationRequest mLocationManagerFusion;
     private SensorManager mSensorManager;
     private Sensor mSensorMagneticField;
     private Sensor mSensorAccelerometer;

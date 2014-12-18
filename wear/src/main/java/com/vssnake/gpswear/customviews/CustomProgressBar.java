@@ -26,6 +26,16 @@ public class CustomProgressBar extends View {
     private float mTextWidth;
     private float mTextHeight;
 
+    Rect r;
+    Paint p = new Paint();
+    int paddingLeft;
+    int paddingTop;
+    int paddingRight;
+    int paddingBottom;
+
+    int contentWidth;
+    int contentHeight;
+
     public CustomProgressBar(Context context) {
         super(context);
         //this.setWillNotDraw(false);
@@ -66,7 +76,8 @@ public class CustomProgressBar extends View {
             if (a.hasValue(R.styleable.CustomProgressBar_exampleDrawable)) {
                 mExampleDrawable = a.getDrawable(
                         R.styleable.CustomProgressBar_exampleDrawable);
-                mExampleDrawable.setCallback(this);
+                if (mExampleDrawable != null)
+                    mExampleDrawable.setCallback(this);
             }
 
             a.recycle();
@@ -112,10 +123,23 @@ public class CustomProgressBar extends View {
 
         // Whatever the width ends up being, ask for a height that would let the pie
         // get as big as it can
-        int minh = MeasureSpec.getSize(w) - (int)mTextWidth + getPaddingBottom() + getPaddingTop();
+        //int minh = MeasureSpec.getSize(w) - (int)mTextWidth + getPaddingBottom() + getPaddingTop();
         int h = resolveSizeAndState(MeasureSpec.getSize(w) - (int)mTextWidth, heightMeasureSpec, 0);
 
         setMeasuredDimension(w, h);
+
+        paddingLeft = getPaddingLeft();
+        paddingTop = getPaddingTop();
+        paddingRight = getPaddingRight();
+        paddingBottom = getPaddingBottom();
+
+        contentWidth = getWidth() - paddingLeft - paddingRight;
+        contentHeight = getHeight() - paddingTop - paddingBottom;
+
+        float wtf = contentWidth /100f *mPercent;
+
+
+        r = new Rect(0,0,(int)wtf,contentHeight);
     }
 
 
@@ -124,19 +148,11 @@ public class CustomProgressBar extends View {
         super.onDraw(canvas);
 
 
-        int paddingLeft = getPaddingLeft();
-        int paddingTop = getPaddingTop();
-        int paddingRight = getPaddingRight();
-        int paddingBottom = getPaddingBottom();
-
-        int contentWidth = getWidth() - paddingLeft - paddingRight;
-        int contentHeight = getHeight() - paddingTop - paddingBottom;
-
-        float wtf = contentWidth /100f *mPercent;
 
 
-        Rect r = new Rect(0,0,(int)wtf,contentHeight);
-        Paint p = new Paint();
+
+
+
         p.setStyle(Paint.Style.FILL);
         p.setColor(mBarColor);
         canvas.drawRect(r,p);

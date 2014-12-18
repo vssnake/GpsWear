@@ -25,12 +25,7 @@ public class GpsLocationProvider implements LocationListener {
         return mLocationUpdateMinTime;
     }
 
-    /**
-     * Set the minimum interval for location updates. See {@link
-     * LocationManager.requestLocationUpdates(String, long, float, LocationListener)}. Note that
-     * you
-     * should call this before calling {@link enableMyLocation()}.
-     */
+
     public void setLocationUpdateMinTime(final long milliSeconds) {
         mLocationUpdateMinTime = milliSeconds;
     }
@@ -39,22 +34,12 @@ public class GpsLocationProvider implements LocationListener {
         return mLocationUpdateMinDistance;
     }
 
-    /**
-     * Set the minimum distance for location updates. See
-     * {@link LocationManager.requestLocationUpdates}. Note that you should call this before
-     * calling
-     * {@link enableMyLocation()}.
-     */
+
     public void setLocationUpdateMinDistance(final float meters) {
         mLocationUpdateMinDistance = meters;
     }
 
-    /**
-     * Enable location updates and show your current location on the map. By default this will
-     * request location updates as frequently as possible, but you can change the frequency and/or
-     * distance by calling {@link setLocationUpdateMinTime(long)} and/or {@link
-     * setLocationUpdateMinDistance(float)} before calling this method.
-     */
+
     public boolean startLocationProvider(UserLocationOverlay myLocationConsumer) {
         mMyLocationConsumer = myLocationConsumer;
         boolean result = false;

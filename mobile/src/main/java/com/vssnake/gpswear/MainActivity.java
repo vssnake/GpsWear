@@ -1,38 +1,19 @@
 package com.vssnake.gpswear;
 
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
-import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
+
 import android.support.v7.app.ActionBarActivity;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataItem;
-import com.google.android.gms.wearable.DataItemBuffer;
+
+
 import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.Wearable;
 import com.mariux.teleport.lib.TeleportClient;
 import com.vssnake.gspshared.StacData;
 
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 

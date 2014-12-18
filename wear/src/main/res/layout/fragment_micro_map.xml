@@ -15,7 +15,7 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/mp_frame_layout"></FrameLayout>
+        android:id="@+id/mp_frame_layout"/>
 
     <LinearLayout
         android:orientation="vertical"

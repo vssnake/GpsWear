@@ -11,30 +11,6 @@
         <ImageView android:id="@+id/main_indicator_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/pagercircle" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:background="#50fdffff"
-        android:visibility="invisible">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Swipe  Right to Gps Info"
-            android:id="@+id/textView14"
-            android:layout_gravity="center"
-            android:gravity="center" />
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:id="@+id/imageView"
-            android:src="@drawable/right_double_arrow" />
-    </LinearLayout>
-
     <android.support.wearable.view.DismissOverlayView
         android:id="@+id/dismiss_overlay"
         android:layout_height="match_parent"

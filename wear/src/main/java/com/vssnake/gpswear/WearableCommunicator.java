@@ -58,7 +58,7 @@ public class WearableCommunicator extends TeleportService{
 
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(StacData.REQUEST_MODE_LOCATION,fusionLocation);
-        editor.commit();
+        editor.apply();
         //Save preferences of fusion Location
         if (locationHandler != null){
 

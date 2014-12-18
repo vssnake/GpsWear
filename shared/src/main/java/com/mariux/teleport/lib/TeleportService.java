@@ -276,11 +276,7 @@ public abstract class TeleportService extends WearableListenerService{
     public boolean isNodeConnected(){
         NodeApi.GetConnectedNodesResult nodes =
                 Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
-        if (nodes.getNodes().size() > 0){
-            return true;
-        }else{
-            return false;
-        }
+        return (nodes.getNodes().size() > 0);
     }
 
 
@@ -419,15 +415,14 @@ public abstract class TeleportService extends WearableListenerService{
         protected Bitmap doInBackground(Object... params) {
             InputStream assetInputStream = Wearable.DataApi.getFdForAsset(
                     (GoogleApiClient)params[1], (Asset)params[0]).await().getInputStream();
-            Bitmap bitmap=  BitmapFactory.decodeStream(assetInputStream);
-            return bitmap;
+            return BitmapFactory.decodeStream(assetInputStream);
 
         }
 
         @Override
         protected abstract void onPostExecute(Bitmap bitmap);
 
-    };
+    }
 
 //    /**
 //     * Loads Bitmap from Asset
