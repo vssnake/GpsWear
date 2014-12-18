@@ -39,7 +39,6 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
         this.mContext = mainPresenter.getContext();
         this.mFusionGps = fusionLocation;
         mGpsDataChangeHandlers = new ArrayList<GpsDataChangeHandler>();
-
         mGoogleApiClient = new GoogleApiClient.Builder(mContext)
                 .addApi(LocationServices.API)
                 .addApi(Wearable.API)  // used for data layer API

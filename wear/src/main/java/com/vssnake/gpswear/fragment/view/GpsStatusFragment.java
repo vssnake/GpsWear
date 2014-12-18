@@ -5,14 +5,16 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.wearable.activity.InsetActivity;
-import android.support.wearable.view.WatchViewStub;
+
+import android.support.wearable.view.BoxInsetLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.vssnake.gpswear.MainPresenter;
@@ -54,6 +56,10 @@ public class GpsStatusFragment extends Fragment implements MainPresenter.Fragmen
     LinearLayout mSatellites;
     @InjectView(R.id.gs_test)
     LinearLayout mTest;
+    @InjectView(R.id.gs_box_layout)
+    BoxInsetLayout mBoxLayout;
+    @InjectView(R.id.gs_scrollView)
+    ScrollView mSrcollView;
 
     @Inject
     GpsStatusPresenter presenter;
@@ -84,32 +90,60 @@ public class GpsStatusFragment extends Fragment implements MainPresenter.Fragmen
         // Inflate the layout for this fragment_gps_status
         View view;
         //if(((InsetActivity)getActivity()).isRound()){
-          //  view = inflater.inflate(R.layout.fragment_gps_status_round,container,false);
-       // }else{
-           view = inflater.inflate(R.layout.fragment_gps_status,container,false);
+        //  view = inflater.inflate(R.layout.fragment_gps_status_round,container,false);
+        // }else{
+        view = inflater.inflate(R.layout.fragment_gps_status, container, false);
         //}
 
+        ButterKnife.inject(GpsStatusFragment.this, view);
 
-        WatchViewStub stub = (WatchViewStub) view.findViewById(R.id.watch_view_stub);
-        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
-            @Override public void onLayoutInflated(WatchViewStub stub) {
-                // Now you can access your views
-                ButterKnife.inject(GpsStatusFragment.this,stub);
-
-                presenter.attach(GpsStatusFragment.this);
-
-                presenter.resume();
+        /*if(mBoxLayout.isRound()){
+            final float scale = getActivity().getApplicationContext().getResources().getDisplayMetrics().density;
+            int pixels = (int) (15 * scale + 0.5f);
+            mBoxLayout.setPadding(pixels,pixels,pixels,pixels);
+        }*/
 
 
+        mBoxLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mSrcollView.onTouchEvent(event);
 
             }
         });
 
+        mBoxLayout.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
+                // Need to also call the original insets since we have overridden the original
+                // https://developer.android.com/reference/android/view/View.OnApplyWindowInsetsListener.html
+                mBoxLayout.onApplyWindowInsets(windowInsets);
+
+                // You can make calls to detect isRound() here!
+
+                if (!mBoxLayout.isRound()) {
+                    final float scale = getActivity().getApplicationContext().getResources().getDisplayMetrics().density;
+                    int pixels = (int) (15 * scale + 0.5f);
+                    mBoxLayout.setPadding(pixels, pixels, pixels, pixels);
+                }
+                // Return the insets so the BoxInsetLayout still works properly
+                return windowInsets;
+            }
+        });
+
+        presenter.attach(GpsStatusFragment.this);
+
+        presenter.resume();
+
+        addSatellite(40, true, "40");
+        addSatellite(40, true, "40");
+        addSatellite(40, true, "40");
+        addSatellite(40, true, "40");
+        addSatellite(40, true, "40");
 
         return view;
     }
 
-    @Override
     public void onAttach(Activity activity){
         super.onAttach(activity);
 

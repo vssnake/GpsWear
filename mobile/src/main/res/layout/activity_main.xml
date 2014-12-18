@@ -23,4 +23,6 @@
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/checkBox"
         android:textColor="#ffff1300" />
+
+
 </RelativeLayout>

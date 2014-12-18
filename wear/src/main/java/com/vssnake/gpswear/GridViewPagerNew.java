@@ -6,8 +6,9 @@ import android.support.wearable.view.GridViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
+
+import com.vssnake.gpswear.utils.AdvanceTwoFingersDetector;
 
 /**
  * Created by vssnake on 04/12/2014.
@@ -19,6 +20,7 @@ public class GridViewPagerNew extends GridViewPager{
     public boolean intercept = false;
 
     private GestureDetector gestureScanner;
+    AdvanceTwoFingersDetector multiTouchListener;
 
     public GridViewPagerNew(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -39,6 +41,9 @@ public class GridViewPagerNew extends GridViewPager{
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         final int action = MotionEventCompat.getActionMasked(ev);
         if (intercept == true){
+            if (multiTouchListener.onTouchEvent(ev)){
+                return true;
+            }
             boolean result = gestureScanner.onTouchEvent(ev);
             return result;
         }else{
@@ -50,6 +55,25 @@ public class GridViewPagerNew extends GridViewPager{
     }
 
     public void init(Context context){
+
+        multiTouchListener = new AdvanceTwoFingersDetector() {
+            @Override
+            public void onTwoFingerDoubleTap() {
+                Log.i(TAG, "onTwoFingerDoubleTap");
+
+            }
+
+            @Override
+            public boolean onTwoFingerLongPress() {
+                Log.i(TAG,"onTwoFingersLongPress");
+                if (intercept == true){
+                    intercept = false;
+                    return false;
+                }
+                return true;
+            }
+        };
+
         gestureScanner = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener(){
             @Override
             public boolean onDoubleTap(MotionEvent e) {
@@ -59,6 +83,7 @@ public class GridViewPagerNew extends GridViewPager{
                 }
                 return true;
             }
+
 
             @Override
             public boolean onDoubleTapEvent(MotionEvent e) {
@@ -88,13 +113,7 @@ public class GridViewPagerNew extends GridViewPager{
                 return true;
             }
 
-            @Override
-            public void onLongPress(MotionEvent e) {
-                Log.i(TAG, "onLongPress");
-                if (intercept == true){
-                    intercept = false;
-                }
-                         }
+
 
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2,
@@ -106,10 +125,7 @@ public class GridViewPagerNew extends GridViewPager{
 
             }
 
-            @Override
-            public void onShowPress(MotionEvent e) {
-                Log.i(TAG, "onShowPress");
-            }
+
 
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {

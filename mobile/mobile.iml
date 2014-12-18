@@ -90,7 +90,6 @@
     <orderEntry type="library" exported="" name="okio-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="okhttp-2.0.0" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.2" level="project" />
-    <orderEntry type="library" exported="" name="play-services-wearable-6.1.11" level="project" />
     <orderEntry type="module" module-name="Shared" exported="" />
     <orderEntry type="module" module-name="mapboxandroidsdkserver" exported="" />
   </component>

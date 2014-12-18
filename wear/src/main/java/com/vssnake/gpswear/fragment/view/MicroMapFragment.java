@@ -2,17 +2,13 @@ package com.vssnake.gpswear.fragment.view;
 
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.wearable.view.DismissOverlayView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,19 +17,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.google.android.gms.maps.MapView;
 import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.vssnake.gpswear.MainPresenter;
 import com.vssnake.gpswear.R;
 import com.vssnake.gpswear.config.GpsWearApp;
 import com.vssnake.gpswear.fragment.presenter.MicroMapPresenter;
-import com.vssnake.gspshared.StacData;
-
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import com.vssnake.gpswear.utils.AdvanceTwoFingersDetector;
 
 import javax.inject.Inject;
 
@@ -64,6 +54,8 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
     Button mReturnButton;
     @InjectView (R.id.mp_frame_layout)
     FrameLayout mFrameLayout;
+    @InjectView( R.id.mp_dismiss_overlay)
+    DismissOverlayView mDismissOverlay;
 
 
     private ImageView viewYouAreHere;
@@ -77,6 +69,7 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
     private String currentMap = null;
 
     public GestureDetector mGestureDetector;
+    AdvanceTwoFingersDetector multiTouchListener;
 
     public static MicroMapFragment newInstance() {
         MicroMapFragment fragment = new MicroMapFragment();
@@ -133,23 +126,43 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
             @Override
             public void onLongPress(MotionEvent e) {
                 Log.i(TAG, "onLongPress");
-                reloadTrackingButton();
-                changeVisibilityMenu();
 
+
+                mDismissOverlay.show();
 
 
             }
         });
 
+         multiTouchListener = new AdvanceTwoFingersDetector() {
+            @Override
+            public void onTwoFingerDoubleTap() {
+                Log.i(TAG, "TwoFingerDoubleTap");
+            }
+
+             @Override
+             public boolean onTwoFingerLongPress() {
+                 Log.i(TAG, "onTwoFindersLongPress");
+                 reloadTrackingButton();
+                 changeVisibilityMenu();
+                 return true;
+             }
+         };
+
 
         mFrameLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mGestureDetector.onTouchEvent(event);
+                if (multiTouchListener.onTouchEvent(event)){
+                    return true;
+                }
+                if(mGestureDetector.onTouchEvent(event)){
+                    return true;
+                }
                 if (mMenuLayout.getVisibility() == View.INVISIBLE){
                     return mMapView.onTouchEvent(event);
                 }
-                return false;
+                return true;
             }
         });
 
@@ -201,30 +214,7 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
 
 
 
-      /*  mCenterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mMenuLayout.setVisibility(View.INVISIBLE);
-                presenter.centerMap();
-            }
-        });
 
-
-        mRelativeLayout.setClickable(true);
-
-
-        viewYouAreHere = new ImageView(getActivity());
-        viewYouAreHere.setImageResource(R.drawable.youarehere2);
-
-
-        mMapView.setDecoder(presenter.getDecoder());
-
-        mMapView.setSize(StacData.MAP_SIZE, StacData.MAP_SIZE);
-        mMapView.setTransitionsEnabled(false);
-        mMapView.addDetailLevel( 1f, "%row% %col%", null, StacData.WIDTH_BITMAP,
-                StacData.HEIGHT_BITMAP);
-        mMapView.setScale( 1f );
-        */
         presenter.attach(this);
 
         return view;

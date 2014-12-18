@@ -20,7 +20,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:id="@+id/mp_menu"
         android:visibility="invisible"
         android:gravity="center">
@@ -45,6 +45,11 @@
             android:id="@+id/mp_return"
             android:visibility="visible" />
     </LinearLayout>
+
+    <android.support.wearable.view.DismissOverlayView
+        android:id="@+id/mp_dismiss_overlay"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
 
 </RelativeLayout>
 

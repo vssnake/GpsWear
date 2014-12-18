@@ -34,4 +34,9 @@
             android:id="@+id/imageView"
             android:src="@drawable/right_double_arrow" />
     </LinearLayout>
+
+    <android.support.wearable.view.DismissOverlayView
+        android:id="@+id/dismiss_overlay"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
 </RelativeLayout>

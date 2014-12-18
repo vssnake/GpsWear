@@ -3,9 +3,10 @@ package com.vssnake.gpswear;
 import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.wearable.activity.InsetActivity;
+import android.support.wearable.view.DismissOverlayView;
 import android.support.wearable.view.GridViewPager;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
@@ -33,10 +34,14 @@ public class MainActivity extends Activity
     @InjectView(R.id.main_indicator_1)
     ImageView mIndicator2;
 
+    @InjectView(R.id.dismiss_overlay)
+    DismissOverlayView mDisMissOverlay;
 
     private static final String TAG ="MainActivity";
 
     FragmentGridAdapter mLocalPagerAdapter;
+
+    private GestureDetector mDetector;
 
     @Inject MainPresenter presenter;
 
@@ -53,7 +58,12 @@ public class MainActivity extends Activity
 
 
 
-
+        // Configure a gesture detector
+        mDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            public void onLongPress(MotionEvent ev) {
+                mDisMissOverlay.show();
+            }
+        });
 
     }
 
@@ -83,6 +93,7 @@ public class MainActivity extends Activity
         super.onDestroy();
         presenter.stopLocation();
     }
+
 
 
 
@@ -172,6 +183,12 @@ public class MainActivity extends Activity
     public GridViewPagerNew getGridViewPager() {
         System.out.println("");
         return mGridViewPager;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+       //return mDetector.onTouchEvent(ev);
+        return false;
     }
 
 
