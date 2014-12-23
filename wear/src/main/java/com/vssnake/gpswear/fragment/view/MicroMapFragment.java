@@ -87,6 +87,8 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
 
     public boolean disableMove = false;
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -129,6 +131,7 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
 
 
             }
+
         });
 
         multiTouchListener = new AdvanceTwoFingersDetector() {
@@ -155,27 +158,44 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
         };
 
 
+
         mFrameLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
+
                 if (multiTouchListener.onTouchEvent(event)) {
-                    return true;
+
+                }
+                if (mMapView.onTouchEvent(event)){
+
                 }
                 if (mGestureDetector.onTouchEvent(event)) {
-                    return true;
+
+                }else{
+
                 }
-                if (mMenuLayout.getVisibility() == View.INVISIBLE) {
+                /*if (mMenuLayout.getVisibility() == View.INVISIBLE) {
                     return mMapView.onTouchEvent(event);
                 }
+                return true;*/
                 return true;
             }
         });
 
 
+
+        mReturnButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
         mReturnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.onReturnButtonClicked();
+
             }
         });
         mMotionTrackingButton.setOnClickListener(new View.OnClickListener() {

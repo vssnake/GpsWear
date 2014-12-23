@@ -16,8 +16,12 @@ public abstract class AdvanceTwoFingersDetector {
     private byte mTwoFingerTapCount = 0;
     private static final long LONG_PRESS_TIME = ViewConfiguration.getLongPressTimeout();
     private long mTwoFingerPressTime;
+    private boolean mTwoFingerLongTap = false;
 
-    Timer mTimer;
+    Timer mTimer = new Timer();
+
+    float mX = 0;
+    float mY = 0;
 
     public AdvanceTwoFingersDetector(){}
     private void reset(long time) {
@@ -32,28 +36,36 @@ public abstract class AdvanceTwoFingersDetector {
                 if(mFirstDownTime == 0 || event.getEventTime() - mFirstDownTime > TIMEOUT)
 
                     if (event.getPointerCount() == 2){
+                        mX = event.getX();
+                        mY = event.getY();
                         mTimer = new Timer();
                         mTimer.scheduleAtFixedRate(new TimerTask() {
                             @Override
                             public void run() {
                                 mTimer.cancel();
                                 onTwoFingerLongPress();
+                                mTwoFingerLongTap = true;
                             }
-                        }, 500, 500);
+                        }, LONG_PRESS_TIME, LONG_PRESS_TIME);
                     }
 
                     reset(event.getDownTime());
                 break;
             case MotionEvent.ACTION_POINTER_UP:
+                mTimer.cancel();
                 if(event.getPointerCount() == 2) {
                     mTwoFingerPressTime =event.getEventTime() -event.getDownTime();
+                    if (mTwoFingerPressTime >= LONG_PRESS_TIME){
+                        return true;
+                    }
                     mTwoFingerTapCount++;
                 }else
                     mFirstDownTime = 0;
                 break;
             case MotionEvent.ACTION_UP:
 
-                mTimer.cancel();
+
+
                 if(!mSeparateTouches)
                     mSeparateTouches = true;
                 if (mTwoFingerTapCount == 1  && mTwoFingerPressTime >= LONG_PRESS_TIME){
@@ -64,6 +76,18 @@ public abstract class AdvanceTwoFingersDetector {
                     mFirstDownTime = 0;
                     return true;
                 }
+                if (mTwoFingerLongTap){
+                    mTwoFingerLongTap = false;
+                    return true;
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (mX - 10 > event.getX() || mX + 10 < event.getX() || mY - 10 > event.getY() || mY + 10 < event.getY()){
+                    mTimer.cancel();
+                }
+
+                break;
+
         }
 
         return false;

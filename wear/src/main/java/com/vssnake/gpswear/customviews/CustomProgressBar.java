@@ -128,6 +128,16 @@ public class CustomProgressBar extends View {
 
         setMeasuredDimension(w, h);
 
+
+    }
+
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+
+
         paddingLeft = getPaddingLeft();
         paddingTop = getPaddingTop();
         paddingRight = getPaddingRight();
@@ -140,16 +150,6 @@ public class CustomProgressBar extends View {
 
 
         r = new Rect(0,0,(int)wtf,contentHeight);
-    }
-
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-
-
-
 
 
 

@@ -22,6 +22,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Scroller;
 import com.almeros.android.multitouch.RotateGestureDetector;
@@ -68,6 +69,8 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -1516,16 +1519,47 @@ public class MapView extends ViewGroup implements MapViewConstants, MapEventsRec
 
     private boolean canTapTwoFingers = false;
     private int multiTouchDownCount = 0;
+    Timer mTimer = new Timer();
+    private static final long LONG_PRESS_TIME = ViewConfiguration.getLongPressTimeout();
 
     private boolean handleTwoFingersTap(MotionEvent event) {
         int pointerCount = event.getPointerCount();
-        for (int i = 0; i < pointerCount; i++) {
-            int action = event.getActionMasked();
-            switch (action) {
-                case MotionEvent.ACTION_DOWN:
+
+        int action = event.getActionMasked();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                multiTouchDownCount = 0;
+                break;
+            case MotionEvent.ACTION_UP:
+                /*if (!isAnimating() && canTapTwoFingers) {
+                    final ILatLng center =
+                            getProjection().fromPixels(event.getX(), event.getY());
+                    mController.zoomOutAbout(center);
+                    canTapTwoFingers = false;
                     multiTouchDownCount = 0;
-                    break;
-                case MotionEvent.ACTION_UP:
+                    return true;
+                }*/
+                canTapTwoFingers = false;
+                multiTouchDownCount = 0;
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                multiTouchDownCount++;
+                if (pointerCount == 2){
+                    mTimer = new Timer();
+                    mTimer.scheduleAtFixedRate(new TimerTask() {
+                        @Override
+                        public void run() {
+                            mTimer.cancel();
+                            canTapTwoFingers = false;
+                        }
+                    }, LONG_PRESS_TIME, LONG_PRESS_TIME);
+                    canTapTwoFingers = true;
+                }
+                //canTapTwoFingers = multiTouchDownCount > 1;
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                mTimer.cancel();
+                if (pointerCount == 2){
                     if (!isAnimating() && canTapTwoFingers) {
                         final ILatLng center =
                                 getProjection().fromPixels(event.getX(), event.getY());
@@ -1534,19 +1568,14 @@ public class MapView extends ViewGroup implements MapViewConstants, MapEventsRec
                         multiTouchDownCount = 0;
                         return true;
                     }
+                }else{
                     canTapTwoFingers = false;
-                    multiTouchDownCount = 0;
-                    break;
-                case MotionEvent.ACTION_POINTER_DOWN:
-                    multiTouchDownCount++;
-                    canTapTwoFingers = multiTouchDownCount > 1;
-                    break;
-                case MotionEvent.ACTION_POINTER_UP:
-                    multiTouchDownCount--;
-                    //                    canTapTwoFingers = multiTouchDownCount > 1;
-                    break;
-                default:
-            }
+                }
+                multiTouchDownCount--;
+                //                    canTapTwoFingers = multiTouchDownCount > 1;
+                break;
+
+            default:
         }
         return false;
     }
@@ -1554,12 +1583,12 @@ public class MapView extends ViewGroup implements MapViewConstants, MapEventsRec
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         // If map rotation is enabled, propagate onTouchEvent to the rotate gesture detector
-        if (mMapRotationEnabled) {
+       /* if (mMapRotationEnabled) {
             mRotateGestureDetector.onTouchEvent(event);
         }
         // Get rotated event for some touch listeners.
-        MotionEvent rotatedEvent = rotateTouchEvent(event);
-
+        MotionEvent rotatedEvent = rotateTouchEvent(event);*/
+        MotionEvent rotatedEvent = event;
         try {
             if (this.getOverlayManager().onTouchEvent(rotatedEvent, this)) {
                 Log.d(TAG, "OverlayManager handled onTouchEvent");

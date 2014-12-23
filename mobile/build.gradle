@@ -8,8 +8,8 @@ android {
         applicationId "com.vssnake.gpswear"
         minSdkVersion 18
         targetSdkVersion 21
-        versionCode 3
-        versionName "1.02"
+        versionCode 5
+        versionName "1.03"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7

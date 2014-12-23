@@ -136,11 +136,11 @@ public class GpsStatusFragment extends Fragment implements MainPresenter.Fragmen
         presenter.resume();
 
         //Test only
-        /*addSatellite(40, true, "40");
+      /*  addSatellite(20, true, "40");
+        addSatellite(30, true, "40");
         addSatellite(40, true, "40");
-        addSatellite(40, true, "40");
-        addSatellite(40, true, "40");
-        addSatellite(40, true, "40");*/
+        addSatellite(10, true, "40");
+        addSatellite(15, true, "40");*/
 
         return view;
     }
