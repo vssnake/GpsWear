@@ -16,6 +16,9 @@ public class StacData {
     public static final String REQUEST_MODE_LOCATION = "gps/ModeLocation/";
     public static final String REQUEST_MODE_LOCATION_DATA = "gps/ModeLocation/Data";
     public static final String REQUEST_MODE_LOCATION_DATA_OK = "gps/ModeLocatin/Data/ok";
+    public static final String REQUEST_MODE_TYPEMAP = "gps/TypeMap";
+    public static final String REQUEST_MODE_TYPEMAP_DATA = "gps/TypeMap/Data";
+    public static final String REQUEST_MODE_TYPEMAP_OK = "gps/TypeMap/ok";
 
     public static final String PREFS_NAME = "MyPrefsFile";
 }

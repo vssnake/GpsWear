@@ -23,9 +23,22 @@
 	<string name="pencilMapId">examples.a4c252ab</string>
 	<string name="spaceShipMapId">examples.3hqcl3di</string>
 
+    <string name="satelliteMap">Satellite Map</string>
+    <string name="terrainMap">Terrain Map</string>
+    <string name="streetMap">Street Map</string>
+    <string name="outdoorsMap">OutDoor Map</string>
+    <string name="woodcutMap">WoodCut Map</string>
+    <string name="pencilMap">Pencil Map</string>
+    <string name="spaceShipMap">SpaceShipMap Map</string>
+
     <string name="fussionLocationEnable">Fusion Location</string>
 
     <string name="connecting">Connecting to SmartWatch</string>
     <string name="connected">SmartWatch Connected</string>
+
+    <string name="change_map">Change type of map</string>
+
+
+
 
 </resources>

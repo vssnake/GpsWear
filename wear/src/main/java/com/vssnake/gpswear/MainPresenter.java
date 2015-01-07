@@ -31,6 +31,7 @@ public class MainPresenter{
     private List<FragmentShowEvent> mFragmentShowEvent = new ArrayList<FragmentShowEvent>();
 
 
+
     public MainPresenter(Context context){
         // Restore preferences
         settings = context.getSharedPreferences(StacData.PREFS_NAME, 0);
@@ -56,8 +57,17 @@ public class MainPresenter{
                 });
 
             }
+
+            @Override
+            public void onTypeMapChange(String typeMap) {
+                mainActivity.changeMapType(typeMap);
+            }
         };
 
+    }
+
+    public void dettach(){
+        WearableCommunicator.locationHandler = null;
     }
 
     public Context getContext() {

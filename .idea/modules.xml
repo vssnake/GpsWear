@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/MapboxAndroidSDK/MapboxAndroidSDK.iml" filepath="$PROJECT_DIR$/MapboxAndroidSDK/MapboxAndroidSDK.iml" />
       <module fileurl="file://$PROJECT_DIR$/MapxBoxAndroidSdkShared/MapxBoxAndroidSdkShared.iml" filepath="$PROJECT_DIR$/MapxBoxAndroidSdkShared/MapxBoxAndroidSdkShared.iml" />
       <module fileurl="file://$PROJECT_DIR$/shared/Shared.iml" filepath="$PROJECT_DIR$/shared/Shared.iml" />
+      <module fileurl="file://$PROJECT_DIR$/customView/customView.iml" filepath="$PROJECT_DIR$/customView/customView.iml" />
       <module fileurl="file://$PROJECT_DIR$/mapBoxAndroidSdkServer/mapboxandroidsdkserver.iml" filepath="$PROJECT_DIR$/mapBoxAndroidSdkServer/mapboxandroidsdkserver.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobile/mobile.iml" filepath="$PROJECT_DIR$/mobile/mobile.iml" />
       <module fileurl="file://$PROJECT_DIR$/wear/wear.iml" filepath="$PROJECT_DIR$/wear/wear.iml" />

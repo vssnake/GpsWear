@@ -2,6 +2,7 @@ package com.vssnake.gpswear.fragment.view;
 
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.wearable.view.DismissOverlayView;
@@ -19,11 +20,14 @@ import android.widget.RelativeLayout;
 
 import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
+import com.mapbox.mapboxsdk.tileprovider.tilesource.ITileLayer;
+import com.mapbox.mapboxsdk.tileprovider.tilesource.MapboxTileLayer;
 import com.vssnake.gpswear.MainPresenter;
 import com.vssnake.gpswear.R;
 import com.vssnake.gpswear.config.GpsWearApp;
 import com.vssnake.gpswear.fragment.presenter.MicroMapPresenter;
 import com.vssnake.gpswear.utils.AdvanceTwoFingersDetector;
+import com.vssnake.gspshared.StacData;
 
 import javax.inject.Inject;
 
@@ -66,10 +70,10 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
     private UserLocationOverlay mUserLocation;
 
 
-    private String currentMap = null;
+  //  private String currentMap = null;
 
-    public GestureDetector mGestureDetector;
-    AdvanceTwoFingersDetector multiTouchListener;
+    private GestureDetector mGestureDetector;
+    private AdvanceTwoFingersDetector mMultiTouchListener;
 
     public static MicroMapFragment newInstance() {
         return new MicroMapFragment();
@@ -106,8 +110,12 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
         mMapView.setMaxZoomLevel(18);
         mMapView.setUserLocationRequiredZoom(18);
         mMapView.setDiskCacheEnabled(true);
-        currentMap = getString(R.string.streetMapId);
-
+        SharedPreferences settings;
+        settings = getActivity()
+                .getApplicationContext().getSharedPreferences(StacData.PREFS_NAME, 0);
+        String typeMap = settings.getString(StacData.REQUEST_MODE_TYPEMAP,
+                getResources().getString(com.vssnake.gspshared.R.string.satelliteMapId));
+        changeMapType(typeMap);
 
         mMapView.setUserLocationEnabled(true);
         mUserLocation = mMapView.getUserLocationOverlay();
@@ -119,6 +127,8 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
 
 
         reloadTrackingButton();
+
+
 
 
         mGestureDetector = new GestureDetector(getActivity().getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
@@ -134,7 +144,7 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
 
         });
 
-        multiTouchListener = new AdvanceTwoFingersDetector() {
+        mMultiTouchListener = new AdvanceTwoFingersDetector() {
             @Override
             public void onTwoFingerDoubleTap() {
                 Log.i(TAG, "TwoFingerDoubleTap");
@@ -155,6 +165,8 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
                 });
                 return true;
             }
+
+
         };
 
 
@@ -164,7 +176,7 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
             public boolean onTouch(View v, MotionEvent event) {
 
 
-                if (multiTouchListener.onTouchEvent(event)) {
+                if (mMultiTouchListener.onTouchEvent(event)) {
 
                 }
                 if (mMapView.onTouchEvent(event)){
@@ -274,6 +286,18 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
     }
 
 
+    public void changeMapType(final String mapType){
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ITileLayer source;
+                source = new MapboxTileLayer(mapType);
+                mMapView.setTileSource(source);
+            }
+        });
+
+    }
 
 
 
@@ -324,5 +348,13 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
 
     public UserLocationOverlay getUserLocation() {
         return mUserLocation;
+    }
+
+    public GestureDetector getGestureDetector() {
+        return mGestureDetector;
+    }
+
+    public AdvanceTwoFingersDetector getMultiTouchListener() {
+        return mMultiTouchListener;
     }
 }

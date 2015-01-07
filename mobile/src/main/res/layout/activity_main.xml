@@ -1,27 +1,106 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:padding="16dp">
 
 
-    <CheckBox
-        android:layout_width="wrap_content"
+
+
+    <view
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/fussionLocationEnable"
-        android:id="@+id/checkBox"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:enabled="false" />
+        class="android.support.v7.widget.CardView"
+        android:id="@+id/view"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:elevation="25dp">
 
-    <TextView
-        android:layout_width="wrap_content"
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:gravity="center"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/connecting"
+                    android:id="@+id/main_connect_status"
+                    android:textColor="#ffff1300"
+                    android:layout_alignBottom="@+id/checkBox"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignTop="@+id/checkBox"
+                    android:gravity="center" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fussionLocationEnable"
+                    android:id="@+id/checkBox"
+                    android:enabled="false"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/main_connect_status" />
+            </LinearLayout>
+
+        </view>
+
+
+    <view
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/connecting"
-        android:id="@+id/main_connect_status"
+        class="android.support.v7.widget.CardView"
+        android:id="@+id/main_map_change"
+        android:elevation="25dp"
+        android:layout_below="@+id/view"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/checkBox"
-        android:textColor="#ffff1300" />
+        android:layout_marginTop="25dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/main_map_change"
+            android:layout_centerHorizontal="true"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/change_map"
+                android:id="@+id/textView"
+                android:gravity="center" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"></View>
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/main_type_map"
+                android:layout_centerVertical="true"
+                android:layout_alignStart="@+id/main_map_change"
+                android:spinnerMode="dropdown"
+                android:entries="@array/planets_array"
+                android:gravity="center" />
+
+            </LinearLayout>
+
+
+    </view>
+
+
 
 
 </RelativeLayout>

@@ -1,10 +1,14 @@
 package com.vssnake.gpswear;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 
@@ -12,8 +16,12 @@ import android.widget.TextView;
 
 import com.google.android.gms.wearable.DataMap;
 import com.mariux.teleport.lib.TeleportClient;
+import com.vssnake.gpswear.custom.SpinnerImage;
+import com.vssnake.gpswear.custom.SpinnerImageAdapter;
 import com.vssnake.gspshared.StacData;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,6 +39,9 @@ public class MainActivity extends ActionBarActivity {
 
     TextView mTextView;
 
+    Spinner mSpinner;
+    SpinnerImageAdapter mSpinnerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -42,6 +53,16 @@ public class MainActivity extends ActionBarActivity {
         mCheckBox = (CheckBox)findViewById(R.id.checkBox);
 
         mTextView = (TextView) findViewById(R.id.main_connect_status);
+
+
+        mSpinner = (Spinner) findViewById(R.id.main_type_map);
+
+        mSpinnerAdapter = new SpinnerImageAdapter(this,
+                getApplicationContext(),R.layout.custom_spinner,R.id.spinner_title,initSpinnerData());
+
+        mSpinner.setAdapter(mSpinnerAdapter);
+
+        mSpinner.setEnabled(false);
 
         mTeleportClient = new TeleportClient(this);
 
@@ -60,6 +81,8 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
+
+
 
 
     }
@@ -151,8 +174,80 @@ public class MainActivity extends ActionBarActivity {
                         mCheckBox.setChecked(fusionLocation);
                     }
                 });
+            }else if (path.equals(StacData.REQUEST_MODE_TYPEMAP_OK)){
+                DataMap datamap = DataMap.fromByteArray(data);
+                String codeMap = datamap.getString(StacData.REQUEST_MODE_TYPEMAP);
+                final int position = mSpinnerAdapter.getPositionMapID(codeMap);
+                if (position != -1){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSpinner.setSelection(position);
+                            mSpinner.setEnabled(true);
+                            mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                                    DataMap dataMap = new DataMap();
+
+                                    dataMap.putString(StacData.REQUEST_MODE_TYPEMAP_DATA,
+                                            mSpinnerAdapter.getItem(position).getCode());
+                                    mTeleportClient.sendMessage(StacData.REQUEST_MODE_TYPEMAP_DATA,dataMap.toByteArray());
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> parent) {
+                                    Log.d(TAG,"onSpinnerItemSelected | Nothing selected " );
+                                }
+                            });
+                        }
+                    });
+
+
+                }
             }
         }
+    }
+
+    public List<SpinnerImage> initSpinnerData(){
+        Resources r = getResources();
+        List<SpinnerImage> spinnerData = new ArrayList<>();
+        spinnerData.add(new SpinnerImage(
+                r.getString(R.string.streetMap),
+                R.drawable.map_street,
+                r.getString(R.string.streetMapId)));
+
+        spinnerData.add(new SpinnerImage(
+                r.getString(R.string.satellite),
+                R.drawable.map_satellite,
+                r.getString(R.string.satelliteMapId)));
+
+        spinnerData.add(new SpinnerImage(
+                r.getString(R.string.terrainMap),
+                R.drawable.map_terrain,
+                r.getString(R.string.terrainMapId)));
+
+        spinnerData.add(new SpinnerImage(
+                r.getString(R.string.outdoorsMap),
+                R.drawable.map_outdoors,
+                r.getString(R.string.outdoorsMapId)));
+
+        spinnerData.add(new SpinnerImage(
+                r.getString(R.string.woodcutMap),
+                R.drawable.map_woodcut,
+                r.getString(R.string.woodcutMapId)));
+
+        spinnerData.add(new SpinnerImage(
+                r.getString(R.string.pencilMap),
+                R.drawable.map_pencil,
+                r.getString(R.string.pencilMapId)));
+
+        spinnerData.add(new SpinnerImage(
+                r.getString(R.string.spaceShipMap),
+                R.drawable.map_spaceship,
+                r.getString(R.string.spaceShipMapId)));
+
+        return spinnerData;
     }
 
     //mTimer = new Timer();
@@ -160,6 +255,7 @@ public class MainActivity extends ActionBarActivity {
     class PingTask extends TimerTask {
         public void run() {
             mTeleportClient.sendMessage(StacData.REQUEST_MODE_LOCATION,null);
+            mTeleportClient.sendMessage(StacData.REQUEST_MODE_TYPEMAP,null);
         }
     }
 

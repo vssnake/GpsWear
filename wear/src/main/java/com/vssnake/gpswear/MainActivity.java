@@ -10,7 +10,9 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.vssnake.gpswear.config.GpsWearApp;
 import com.vssnake.gpswear.fragment.view.GpsStatusFragment;
@@ -24,7 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class MainActivity extends Activity
-        {
+{
 
     @InjectView(R.id.main_pager)
     GridViewPagerNew mGridViewPager;
@@ -37,6 +39,11 @@ public class MainActivity extends Activity
     @InjectView(R.id.dismiss_overlay)
     DismissOverlayView mDisMissOverlay;
 
+    @InjectView(R.id.main_help_layout)
+    FrameLayout mHelpLayout;
+    @InjectView(R.id.main_help_text)
+    TextView mTextLayout;
+
     private static final String TAG ="MainActivity";
 
     FragmentGridAdapter mLocalPagerAdapter;
@@ -44,6 +51,11 @@ public class MainActivity extends Activity
     volatile GestureDetector mDetector;
 
     @Inject MainPresenter presenter;
+
+    GpsStatusFragment mGpsStatusFragment;
+    MicroMapFragment mMicroMapFragment;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +84,14 @@ public class MainActivity extends Activity
 
     }
 
+    /**
+     * Change type of map
+     * @param mapType
+     */
+    public void changeMapType(String mapType){
+        mMicroMapFragment.changeMapType(mapType);
+    }
+
 
 
 
@@ -92,6 +112,7 @@ public class MainActivity extends Activity
     protected void onDestroy(){
         super.onDestroy();
         presenter.stopLocation();
+        presenter.dettach();
     }
 
 
@@ -126,13 +147,15 @@ public class MainActivity extends Activity
 
         mLocalPagerAdapter = new FragmentGridAdapter(getFragmentManager(),
                 getApplicationContext());
-        GpsStatusFragment gpsStatusFragment = new GpsStatusFragment();
-        MicroMapFragment microMapFragment = new MicroMapFragment();
-        mLocalPagerAdapter.addFragment(gpsStatusFragment);
-        mLocalPagerAdapter.addFragment(microMapFragment);
 
-        presenter.addChangeFragmentEvent(gpsStatusFragment);
-        presenter.addChangeFragmentEvent(microMapFragment);
+        mMicroMapFragment = MicroMapFragment.newInstance();
+        mGpsStatusFragment = GpsStatusFragment.newInstance();
+
+        mLocalPagerAdapter.addFragment(mGpsStatusFragment);
+        mLocalPagerAdapter.addFragment(mMicroMapFragment);
+
+        presenter.addChangeFragmentEvent(mGpsStatusFragment);
+        presenter.addChangeFragmentEvent(mMicroMapFragment);
 
         mGridViewPager.setAdapter(mLocalPagerAdapter);
 

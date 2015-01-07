@@ -11,8 +11,26 @@
         <ImageView android:id="@+id/main_indicator_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/pagercircle" />
     </LinearLayout>
 
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#32000000"
+        android:id="@+id/main_help_layout"
+        android:visibility="invisible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Long Touch with two FIngers to show the menu"
+            android:id="@+id/main_help_text"
+            android:layout_gravity="center"
+            android:gravity="center" />
+    </FrameLayout>
+
     <android.support.wearable.view.DismissOverlayView
         android:id="@+id/dismiss_overlay"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent" />
+
 </RelativeLayout>

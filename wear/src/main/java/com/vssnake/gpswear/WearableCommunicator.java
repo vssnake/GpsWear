@@ -49,6 +49,19 @@ public class WearableCommunicator extends TeleportService{
             boolean fusionLocation = dataMap.getBoolean(StacData.REQUEST_MODE_LOCATION_DATA);
             changeTypeLocation(fusionLocation);
             sendMessage(StacData.REQUEST_MODE_LOCATION_DATA_OK,data);
+        }else if (path.equals(StacData.REQUEST_MODE_TYPEMAP)){
+            DataMap dataMap = new DataMap();
+            dataMap.putString(StacData.REQUEST_MODE_TYPEMAP,getTypeMap());
+            sendMessage(StacData.REQUEST_MODE_TYPEMAP_OK, dataMap.toByteArray());
+        }else if (path.equals(StacData.REQUEST_MODE_TYPEMAP_DATA)){
+            DataMap dataMap = DataMap.fromByteArray(data);
+            String mapType = dataMap.getString(StacData.REQUEST_MODE_TYPEMAP_DATA);
+            saveTypeMap(mapType);
+            sendMessage(StacData.REQUEST_MODE_TYPEMAP_OK,dataMap.toByteArray());
+            if (locationHandler != null){
+                locationHandler.onTypeMapChange(mapType);
+            }
+
         }
     }
 
@@ -67,6 +80,18 @@ public class WearableCommunicator extends TeleportService{
 
     }
 
+    public String  getTypeMap(){
+        return settings.getString(StacData.REQUEST_MODE_TYPEMAP,
+                getResources().getString(com.vssnake.gspshared.R.string.satelliteMapId));
+    }
+
+    public String saveTypeMap(String typeMap){
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(StacData.REQUEST_MODE_TYPEMAP,typeMap);
+        editor.apply();
+        return typeMap;
+    }
+
     @Subscribe
     public void answerAvailable(LocationInitialize event) {
         boolean fusionLocation = settings.getBoolean(StacData.REQUEST_MODE_LOCATION,true);
@@ -77,5 +102,6 @@ public class WearableCommunicator extends TeleportService{
 
     public interface LocationInterface{
         void onModeLocationChange(Boolean locationFusion);
+        void onTypeMapChange(String typeMap);
     }
 }
