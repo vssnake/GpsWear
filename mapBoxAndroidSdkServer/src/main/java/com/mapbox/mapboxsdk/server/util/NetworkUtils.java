@@ -13,6 +13,8 @@ import com.mapbox.mapbox.sdk.shared.constants.MapboxConstants;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.OkUrlFactory;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import javax.net.ssl.SSLSocketFactory;
 import java.io.File;
@@ -22,7 +24,7 @@ import java.net.URL;
 import java.util.UUID;
 
 public class NetworkUtils {
-
+    static OkHttpClient client = new OkHttpClient();
     static Cache cache;
     static File cacheDir =
             new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
@@ -37,22 +39,39 @@ public class NetworkUtils {
         return getHttpURLConnection(url, null);
     }
 
-    public static HttpURLConnection getHttpURLConnection(final URL url, final SSLSocketFactory sslSocketFactory) {
-        OkHttpClient client = new OkHttpClient();
-
-        /*if (cache == null){
+    public static OkHttpClient getOkHttp(){
+        if (cache == null){
             try {
-                getCache(cacheDir,1024);
+                cache = getCache(cacheDir,10 * 1024 * 1024);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         if (cache != null) {
             client.setCache(cache);
-        }*/
+        }
+
+        return client;
+    }
+
+    public static HttpURLConnection getHttpURLConnection(final URL url, final SSLSocketFactory sslSocketFactory) {
+
+
+
+        /*if (cache == null){
+            try {
+                cache = getCache(cacheDir,1024);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (cache != null) {
+            client.setCache(cache);
+        }
         if (sslSocketFactory != null) {
             client.setSslSocketFactory(sslSocketFactory);
-        }
+        }*/
+
         HttpURLConnection connection = new OkUrlFactory(client).open(url);
         connection.setRequestProperty("User-Agent", MapboxConstants.USER_AGENT);
         return connection;

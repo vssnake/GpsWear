@@ -9,6 +9,7 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.mapbox.mapbox.sdk.shared.constants.BlackHoleConstants;
 import com.mapbox.mapboxsdk.server.util.BlackHoleServiceSync;
 import com.mapbox.mapboxsdk.server.util.NetworkUtils;
+import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -37,36 +38,12 @@ public class BlackHoleService extends BlackHoleServiceSync {
     public static final String TAG = "BlackHoleService";
 
 
-    private static int NUMBER_OF_THREADS = 3;
-
-    // A queue of Runnables
-    private BlockingQueue<Runnable> mDecodeWorkQueue;
-    private List<String> mData = new ArrayList<>();
-    // Instantiates the queue of Runnables as a LinkedBlockingQueue
-
-    // Sets the amount of time an idle thread waits before terminating
-    private static final int KEEP_ALIVE_TIME = 1;
-    // Sets the Time Unit to seconds
-    private static final TimeUnit KEEP_ALIVE_TIME_UNIT = TimeUnit.SECONDS;
-
-    ThreadPoolExecutor mDecodeThreadPool;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate");
-
-        mDecodeWorkQueue = new LinkedBlockingQueue<Runnable>();
-
-
-        // Creates a thread pool manager
-        mDecodeThreadPool = new ThreadPoolExecutor(
-                NUMBER_OF_THREADS,       // Initial pool size
-                NUMBER_OF_THREADS,       // Max pool size
-                KEEP_ALIVE_TIME,
-                KEEP_ALIVE_TIME_UNIT,
-                mDecodeWorkQueue);
 
     }
 
@@ -90,11 +67,6 @@ public class BlackHoleService extends BlackHoleServiceSync {
                     sendMessage(messageEvent.getPath(),null);
                     return;
                 }*/
-
-                mDecodeThreadPool.execute(
-                new Runnable() {
-                    @Override
-                    public void run() {
                         byte[] data = messageEvent.getData();
                         Log.d(TAG,"onMessageReceived : " + messageEvent.getPath());
                         String url = null;
@@ -108,6 +80,22 @@ public class BlackHoleService extends BlackHoleServiceSync {
                                 .url(url)
                                 .build();
 
+                        NetworkUtils.getOkHttp().newCall(request).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(Request request, IOException e) {
+                                sendMessage(messageEvent.getPath(),null);
+                            }
+
+                            @Override
+                            public void onResponse(Response response) throws IOException {
+                                try{
+                                    sendMessage(messageEvent.getPath(),response.body().bytes());
+                                }catch(IOException e){
+                                    sendMessage(messageEvent.getPath(),null);
+                                }
+
+                            }
+                        });
                         try {
                             Response response = NetworkUtils.getOkHttp().newCall(request).execute();
 
@@ -150,8 +138,7 @@ public class BlackHoleService extends BlackHoleServiceSync {
                             e.printStackTrace();
                         }*/
 
-                    }
-                });
+
 
             }else if (messageEvent.getPath().equals(BlackHoleConstants.IS_NETWORK_ON)){
                 sendMessage(messageEvent.getPath(),new byte[]{1});

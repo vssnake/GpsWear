@@ -1,1 +1,1 @@
-include ':mobile', ':wear', ':Shared', ':MapboxAndroidSDK', ':mapboxandroidsdkserver', ':MapxBoxAndroidSdkShared', ':customView'
+include ':mobile', ':wear', ':Shared', ':MapboxAndroidSDK', ':mapboxandroidsdkserver', ':MapxBoxAndroidSdkShared'

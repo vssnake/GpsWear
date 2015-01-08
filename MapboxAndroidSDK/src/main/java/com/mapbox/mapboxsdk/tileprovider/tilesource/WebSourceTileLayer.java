@@ -174,6 +174,8 @@ public class WebSourceTileLayer extends TileLayer {
 
             byte[] image = blackHole.getData(BlackHoleConstants.REQUEST_DATA_HTTP,url,
                     url.getBytes(Charset.forName("UTF-8")));
+
+            Log.d(TAG,"onGetBitMapFromUrl " + url);
              //connection = NetworkUtils.getHttpURLConnection(new URL(url));
             //Bitmap bitmap = BitmapFactory.decodeStream(connection.getInputStream());
             Bitmap bitmap = BitmapFactory.decodeByteArray(image,0,image.length);

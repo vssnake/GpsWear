@@ -82,9 +82,9 @@ public abstract class AdvanceTwoFingersDetector {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-               // if (mX - 10 > event.getX() || mX + 10 < event.getX() || mY - 10 > event.getY() || mY + 10 < event.getY()){
-               //     mTimer.cancel();
-              //  }
+                if (mX - 40 > event.getX() || mX + 40 < event.getX() || mY - 40 > event.getY() || mY + 40 < event.getY()){
+                    mTimer.cancel();
+              }
 
                 break;
 
