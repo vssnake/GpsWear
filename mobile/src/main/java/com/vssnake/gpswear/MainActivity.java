@@ -3,6 +3,7 @@ package com.vssnake.gpswear;
 import android.content.res.Resources;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
@@ -42,6 +43,11 @@ public class MainActivity extends ActionBarActivity {
     Spinner mSpinner;
     SpinnerImageAdapter mSpinnerAdapter;
 
+    RunnableParameter<Boolean> mCheckBoxRunnable;
+    RunnableParameter<Integer> mChangeMapRunnable;
+
+    Handler mHandler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -62,7 +68,7 @@ public class MainActivity extends ActionBarActivity {
 
         mSpinner.setAdapter(mSpinnerAdapter);
 
-        mSpinner.setEnabled(false);
+
 
         mTeleportClient = new TeleportClient(this);
 
@@ -76,13 +82,35 @@ public class MainActivity extends ActionBarActivity {
 
                 mCheckBox.setEnabled(true);
                 mCheckBox.setEnabled(false);
-                sendModeFusion(mCheckBox.isChecked());
-
-
+                mCheckBoxRunnable.setParameter(mCheckBox.isChecked());
+                mHandler.post(mCheckBoxRunnable);
+               // sendModeFusion(mCheckBox.isChecked());
             }
         });
 
+        mCheckBoxRunnable = new RunnableParameter<Boolean>() {
+            @Override
+            public void run() {
+                DataMap dataMap = new DataMap();
+                dataMap.putBoolean(StacData.REQUEST_MODE_LOCATION_DATA,
+                        getParameter());
+                mTeleportClient.sendMessage(StacData.REQUEST_MODE_LOCATION_DATA,dataMap.toByteArray());
+                mHandler.postDelayed(mCheckBoxRunnable,1000);
+            }
+        };
 
+
+        mChangeMapRunnable = new RunnableParameter<Integer>() {
+            @Override
+            public void run() {
+                DataMap dataMap = new DataMap();
+
+                dataMap.putString(StacData.REQUEST_MODE_TYPEMAP_DATA,
+                        mSpinnerAdapter.getItem(getParameter()).getCode());
+                mTeleportClient.sendMessage(StacData.REQUEST_MODE_TYPEMAP_DATA,dataMap.toByteArray());
+                mHandler.postDelayed(mChangeMapRunnable,1000);
+            }
+        };
 
 
     }
@@ -96,12 +124,18 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
+
     @Override
     protected void onStart() {
         super.onStart();
         mTeleportClient.connect();
         mTimer = new Timer();
-        mTimer.scheduleAtFixedRate(new PingTask(), 500, 1000);
+
+        mSpinner.setEnabled(false);
+        mCheckBox.setEnabled(false);
+        mTextView.setText(R.string.connecting);
+        mTextView.setTextColor(getResources().getColor(R.color.red));
+        //mTimer.scheduleAtFixedRate(new PingTask(), 500, 1000);
 
         mTeleportClient.setOnGetMessageCallback(new onMessage());
         mTeleportClient.addConnectionCallbacks(new TeleportClient.OnConnectionCallback() {
@@ -117,10 +151,6 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
-
-
-
-
     }
 
     @Override
@@ -164,6 +194,7 @@ public class MainActivity extends ActionBarActivity {
             }else if (path.equals(StacData.REQUEST_MODE_LOCATION_DATA_OK)){
                 DataMap dataMap = DataMap.fromByteArray(data);
                 final boolean fusionLocation = dataMap.getBoolean(StacData.REQUEST_MODE_LOCATION_DATA);
+                mHandler.removeCallbacks(mCheckBoxRunnable);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -188,11 +219,17 @@ public class MainActivity extends ActionBarActivity {
                                 @Override
                                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                                    DataMap dataMap = new DataMap();
+                                    mChangeMapRunnable.setParameter(position);
+
+                                    mHandler.post(mChangeMapRunnable);
+
+                                    mSpinner.setEnabled(false);
+
+                                    /*DataMap dataMap = new DataMap();
 
                                     dataMap.putString(StacData.REQUEST_MODE_TYPEMAP_DATA,
                                             mSpinnerAdapter.getItem(position).getCode());
-                                    mTeleportClient.sendMessage(StacData.REQUEST_MODE_TYPEMAP_DATA,dataMap.toByteArray());
+                                    mTeleportClient.sendMessage(StacData.REQUEST_MODE_TYPEMAP_DATA,dataMap.toByteArray());*/
                                 }
 
                                 @Override
@@ -204,6 +241,9 @@ public class MainActivity extends ActionBarActivity {
                     });
 
 
+                }else{
+                    mSpinner.setEnabled(true);
+                    mHandler.removeCallbacks(mChangeMapRunnable);
                 }
             }
         }
@@ -257,6 +297,17 @@ public class MainActivity extends ActionBarActivity {
             mTeleportClient.sendMessage(StacData.REQUEST_MODE_LOCATION,null);
             mTeleportClient.sendMessage(StacData.REQUEST_MODE_TYPEMAP,null);
         }
+    }
+
+
+    abstract class RunnableParameter<T> implements Runnable {
+        T parameter;
+        public T getParameter(){ return parameter;}
+        public void setParameter(T parameter){ this.parameter = parameter;}
+        //OneShotTask(String s) { str = s; }
+        /*public void run() {
+            someFunc(str);
+        }*/
     }
 
 }
