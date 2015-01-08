@@ -1,5 +1,6 @@
 package com.vssnake.gpswear.utils;
 
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
@@ -18,12 +19,21 @@ public abstract class AdvanceTwoFingersDetector {
     private long mTwoFingerPressTime;
     private boolean mTwoFingerLongTap = false;
 
-    Timer mTimer = new Timer();
+    Handler mHandler = new Handler();
+    Runnable mRunnable;
 
     float mX = 0;
     float mY = 0;
 
-    public AdvanceTwoFingersDetector(){}
+    public AdvanceTwoFingersDetector(){
+        mRunnable =  new Runnable() {
+            @Override
+            public void run() {
+                onTwoFingerLongPress();
+                mTwoFingerLongTap = true;
+            }
+        };
+    }
     private void reset(long time) {
         mFirstDownTime = time;
         mSeparateTouches = false;
@@ -38,21 +48,14 @@ public abstract class AdvanceTwoFingersDetector {
                     if (event.getPointerCount() == 2){
                         mX = event.getX();
                         mY = event.getY();
-                        mTimer = new Timer();
-                        mTimer.scheduleAtFixedRate(new TimerTask() {
-                            @Override
-                            public void run() {
-                                mTimer.cancel();
-                                onTwoFingerLongPress();
-                                mTwoFingerLongTap = true;
-                            }
-                        }, LONG_PRESS_TIME, LONG_PRESS_TIME);
+
+                        mHandler.postDelayed(mRunnable, LONG_PRESS_TIME);
                     }
 
                     reset(event.getDownTime());
                 break;
             case MotionEvent.ACTION_POINTER_UP:
-                mTimer.cancel();
+                mHandler.removeCallbacks(mRunnable);
                 if(event.getPointerCount() == 2) {
                     mTwoFingerPressTime =event.getEventTime() -event.getDownTime();
                     if (mTwoFingerPressTime >= LONG_PRESS_TIME){
@@ -83,7 +86,7 @@ public abstract class AdvanceTwoFingersDetector {
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mX - 40 > event.getX() || mX + 40 < event.getX() || mY - 40 > event.getY() || mY + 40 < event.getY()){
-                    mTimer.cancel();
+                    mHandler.removeCallbacks(mRunnable);
               }
 
                 break;
