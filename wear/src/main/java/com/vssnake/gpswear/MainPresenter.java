@@ -2,11 +2,6 @@ package com.vssnake.gpswear;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.MotionEvent;
 
 import com.squareup.otto.Bus;
 import com.vssnake.gpswear.utils.LocationManager;
@@ -88,10 +83,10 @@ public class MainPresenter{
 
     public boolean hasFusionLocationEnabled(){ return mLocationManager.getFusionGps();}
 
-    public void addLocationHandler(com.vssnake.gpswear.utils.LocationManager.GpsDataChangeHandler handler){
+    public void addLocationHandler(LocationManager.GpsDataChangeHandler handler){
             mLocationManager.addEventInterface(handler);
     }
-    public void removeLocationHandler(com.vssnake.gpswear.utils.LocationManager.GpsDataChangeHandler handler){
+    public void removeLocationHandler(LocationManager.GpsDataChangeHandler handler){
         mLocationManager.removeEventHandler(handler);
     }
     public boolean getTypeLocation(){
@@ -101,6 +96,10 @@ public class MainPresenter{
     public void disableMove (boolean disableMove){
         mMainActivity.getGridViewPager().intercept = disableMove;
 
+    }
+
+    public void changePreviousPage(){
+        mMainActivity.changePreviousPage();
     }
 
 

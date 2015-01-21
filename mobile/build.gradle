@@ -8,8 +8,8 @@ android {
         applicationId "com.vssnake.gpswear"
         minSdkVersion 18
         targetSdkVersion 21
-        versionCode 6
-        versionName "1.03"
+        versionCode 8
+        versionName "1.1"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -17,9 +17,10 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
     }
 }
 

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.app.Fragment;
 
 import android.support.wearable.view.BoxInsetLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;

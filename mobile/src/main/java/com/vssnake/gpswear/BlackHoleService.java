@@ -2,32 +2,18 @@ package com.vssnake.gpswear;
 
 import android.util.Log;
 
-import com.google.android.gms.common.data.FreezableUtils;
-import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.MessageEvent;
 import com.mapbox.mapbox.sdk.shared.constants.BlackHoleConstants;
 import com.mapbox.mapboxsdk.server.util.BlackHoleServiceSync;
 import com.mapbox.mapboxsdk.server.util.NetworkUtils;
 import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by vssnake on 03/12/2014.

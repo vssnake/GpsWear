@@ -16,6 +16,7 @@ public class GpsWearApp extends Application {
 
     private ObjectGraph graph;
 
+
     @Override public void onCreate() {
         super.onCreate();
 

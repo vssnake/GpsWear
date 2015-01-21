@@ -15,5 +15,6 @@
     <string name="show_position">Show position</string>
     <string name="motion_tracking">Motion Tracking</string>
     <string name="return_map">Return Map</string>
+    <string name="back">Previous Screen</string>
 
 </resources>

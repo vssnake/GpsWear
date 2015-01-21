@@ -19,6 +19,7 @@ import com.google.android.gms.wearable.DataMap;
 import com.mariux.teleport.lib.TeleportClient;
 import com.vssnake.gpswear.custom.SpinnerImage;
 import com.vssnake.gpswear.custom.SpinnerImageAdapter;
+import com.vssnake.gspshared.RunnableParameter;
 import com.vssnake.gspshared.StacData;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class MainActivity extends ActionBarActivity {
 
     Spinner mSpinner;
     SpinnerImageAdapter mSpinnerAdapter;
+
 
     RunnableParameter<Boolean> mCheckBoxRunnable;
     RunnableParameter<Integer> mChangeMapRunnable;
@@ -112,22 +114,6 @@ public class MainActivity extends ActionBarActivity {
             }
         };
 
-
-    }
-
-    public void sendModeFusion(Boolean modeFusion){
-        DataMap dataMap = new DataMap();
-        dataMap.putBoolean(StacData.REQUEST_MODE_LOCATION_DATA,
-                modeFusion);
-
-        mTeleportClient.sendMessage(StacData.REQUEST_MODE_LOCATION_DATA,dataMap.toByteArray());
-    }
-
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         mTeleportClient.connect();
         mTimer = new Timer();
 
@@ -142,7 +128,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onConnected(Bundle bundle) {
                 mTimer.scheduleAtFixedRate(new PingTask(), 500, 1000);
-               // mTeleportClient.sendMessage(StacData.REQUEST_MODE_LOCATION,null);
+                // mTeleportClient.sendMessage(StacData.REQUEST_MODE_LOCATION,null);
 
             }
 
@@ -151,13 +137,22 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
+
+
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    public void onDestroy(){
+        super.onDestroy();
         mTeleportClient.disconnect();
+    }
 
+    public void sendModeFusion(Boolean modeFusion){
+        DataMap dataMap = new DataMap();
+        dataMap.putBoolean(StacData.REQUEST_MODE_LOCATION_DATA,
+                modeFusion);
+
+        mTeleportClient.sendMessage(StacData.REQUEST_MODE_LOCATION_DATA,dataMap.toByteArray());
     }
 
     @Override
@@ -242,7 +237,13 @@ public class MainActivity extends ActionBarActivity {
 
 
                 }else{
-                    mSpinner.setEnabled(true);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSpinner.setEnabled(true);
+                        }
+                    });
+
                     mHandler.removeCallbacks(mChangeMapRunnable);
                 }
             }
@@ -299,16 +300,6 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-
-    abstract class RunnableParameter<T> implements Runnable {
-        T parameter;
-        public T getParameter(){ return parameter;}
-        public void setParameter(T parameter){ this.parameter = parameter;}
-        //OneShotTask(String s) { str = s; }
-        /*public void run() {
-            someFunc(str);
-        }*/
-    }
 
 }
 

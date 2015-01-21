@@ -132,18 +132,29 @@ public class MicroMapPresenter extends BasicPresenter{
 
     }
 
-    void onMessageLocation(final Location location){
+    public void onBackScreenClicked(){
+        mFragment.changeVisibilityMenu();
+
+        getMainPresenter().changePreviousPage();
+
+    }
+
+    void onMessageLocation(Location location){
            // mFragment.getUserLocation().onLocationChanged(location,null);
         Handler mainHandler = new Handler(mainActivityPresenter.getContext().getMainLooper());
+        final Location finalLocation = location;
+
 
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
                 mFragment.getUserLocation().mIsLocationEnabled = true;
-                mFragment.getUserLocation().onLocationChanged(location,null);
+                Log.d(TAG,"onMessageLocation | Lat " + finalLocation.getLatitude() + "lng" + finalLocation.getLongitude() + " alt " + finalLocation.getAltitude());
+                mFragment.getUserLocation().onLocationChanged(finalLocation,null);
 
             }
         }; // This is your code
+
         mainHandler.post(myRunnable);
 
     }

@@ -4,9 +4,6 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 /**
  * Created by vssnake on 17/12/2014.
  */

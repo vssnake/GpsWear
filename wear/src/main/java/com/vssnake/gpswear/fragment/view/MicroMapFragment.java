@@ -14,11 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.ITileLayer;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.MapboxTileLayer;
@@ -54,12 +54,23 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
     Button mShowPositionButton;
     @InjectView(R.id.mp_motion_tracking)
     Button mMotionTrackingButton;
+    @InjectView(R.id.mp_back)
+    Button mBackButton;
+    @InjectView(R.id.mp_menu_button)
+    ImageButton mImageButtonMenu;
+    @InjectView(R.id.mp_zoom_out_button)
+    ImageButton mImageButtonZoomOut;
+    @InjectView(R.id.mp_menu_layout)
+    LinearLayout mLayoutMenuButton;
+    @InjectView(R.id.mp_zoom_out_layout)
+    LinearLayout mLayoutZoomOutButton;
     @InjectView(R.id.mp_return)
     Button mReturnButton;
     @InjectView(R.id.mp_frame_layout)
     FrameLayout mFrameLayout;
     @InjectView(R.id.mp_dismiss_overlay)
     DismissOverlayView mDismissOverlay;
+
 
 
     private ImageView viewYouAreHere;
@@ -101,6 +112,10 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
 
         ButterKnife.inject(this, view);
 
+        if(getActivity().getPackageManager().hasSystemFeature("android.hardware.touchscreen.multitouch")){
+            mLayoutMenuButton.setVisibility(View.INVISIBLE);
+            mLayoutZoomOutButton.setVisibility(View.INVISIBLE);
+        }
 
         // mMapView = (com.mapbox.mapboxsdk.views.MapView) view.findViewById(R.id.mapview);
         mMapView.setMinZoomLevel(mMapView.getTileProvider().getMinimumZoomLevel());
@@ -110,6 +125,7 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
         mMapView.setMaxZoomLevel(18);
         mMapView.setUserLocationRequiredZoom(18);
         mMapView.setDiskCacheEnabled(true);
+
         SharedPreferences settings;
         settings = getActivity()
                 .getApplicationContext().getSharedPreferences(StacData.PREFS_NAME, 0);
@@ -117,7 +133,6 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
                 getResources().getString(com.vssnake.gspshared.R.string.satelliteMapId));
         changeMapType(typeMap);
 
-        mMapView.setUserLocationEnabled(true);
         mUserLocation = mMapView.getUserLocationOverlay();
         //mUserLocation = new UserLocationOverlay(provider,mMapView);
 
@@ -127,9 +142,6 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
 
 
         reloadTrackingButton();
-
-
-
 
         mGestureDetector = new GestureDetector(getActivity().getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -159,7 +171,6 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
                     @Override
                     public void run() {
                         reloadTrackingButton();
-
                         changeVisibilityMenu();
                     }
                 });
@@ -174,8 +185,6 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
         mFrameLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
-
                 if (mMultiTouchListener.onTouchEvent(event)) {
 
                 }
@@ -187,10 +196,6 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
                 }else{
 
                 }
-                /*if (mMenuLayout.getVisibility() == View.INVISIBLE) {
-                    return mMapView.onTouchEvent(event);
-                }
-                return true;*/
                 return true;
             }
         });
@@ -221,7 +226,7 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
 
                         break;
                     case NONE:
-                        mMapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
+                        mMapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
                         break;
                 }
                 reloadTrackingButton();
@@ -240,6 +245,28 @@ public class MicroMapFragment extends Fragment implements MainPresenter.Fragment
 
                 reloadTrackingButton();
                 changeVisibilityMenu();
+            }
+        });
+
+
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onBackScreenClicked();
+            }
+        });
+
+        mImageButtonMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reloadTrackingButton();
+                changeVisibilityMenu();
+            }
+        });
+        mImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMapView.zoomOut();
             }
         });
 

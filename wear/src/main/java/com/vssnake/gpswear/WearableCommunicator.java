@@ -2,16 +2,12 @@ package com.vssnake.gpswear;
 
 import android.content.SharedPreferences;
 
-import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataMap;
 import com.mariux.teleport.lib.TeleportService;
 import com.squareup.otto.Subscribe;
 import com.vssnake.gpswear.config.GpsWearApp;
-import com.vssnake.gpswear.fragment.presenter.MicroMapPresenter;
 import com.vssnake.gpswear.otto.LocationInitialize;
 import com.vssnake.gspshared.StacData;
-
-import javax.inject.Inject;
 
 /**
  * Created by vssnake on 05/12/2014.

@@ -15,3 +15,27 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontwarn butterknife.internal.**
+-keep class **$$ViewInjector { *; }
+-keepnames class * { @butterknife.InjectView *;}
+
+    # Dagger
+    -dontwarn dagger.internal.codegen.**
+    -keepclassmembers,allowobfuscation class * {
+        @javax.inject.* *;
+        @dagger.* *;
+        <init>();
+    }
+    -keep class dagger.* { *; }
+    -keep class javax.inject.* { *; }
+    -keep class * extends dagger.internal.Binding
+    -keep class * extends dagger.internal.ModuleAdapter
+    -keep class * extends dagger.internal.StaticInjection
+
+    -assumenosideeffects class android.util.Log {
+             public static *** d(...);
+             public static *** v(...);
+    }
+
+    -keepclassmembers class com.mapbox.mapboxsdk.views.MapView { *; }

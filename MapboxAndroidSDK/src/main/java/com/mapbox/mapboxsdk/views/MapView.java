@@ -1544,7 +1544,8 @@ public class MapView extends ViewGroup implements MapViewConstants, MapEventsRec
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
                 multiTouchDownCount++;
-                if (pointerCount == 2){
+
+                if (pointerCount >= 2){
                     mTimer = new Timer();
                     mTimer.scheduleAtFixedRate(new TimerTask() {
                         @Override
@@ -1559,7 +1560,7 @@ public class MapView extends ViewGroup implements MapViewConstants, MapEventsRec
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 mTimer.cancel();
-                if (pointerCount == 2){
+                if (pointerCount >= 2){
                     if (!isAnimating() && canTapTwoFingers) {
                         final ILatLng center =
                                 getProjection().fromPixels(event.getX(), event.getY());

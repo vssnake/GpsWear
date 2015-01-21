@@ -403,18 +403,22 @@ public class UserLocationOverlay extends SafeDrawOverlay implements Snappable, M
     }
 
     public void onLocationChanged(Location location, GpsLocationProvider source) {
+
+
+
         // If we had a previous location, let's get those bounds
         if (mLocation != null && mLocation.getBearing() == location.getBearing() && mLocation.distanceTo(location) == 0) {
             return;
         }
 
-        updateMyLocation(location);
+
 
         synchronized (mRunOnFirstFix) {
             for (final Runnable runnable : mRunOnFirstFix) {
                 new Thread(runnable).start();
             }
             mRunOnFirstFix.clear();
+            updateMyLocation(location);
         }
     }
 
@@ -463,6 +467,7 @@ public class UserLocationOverlay extends SafeDrawOverlay implements Snappable, M
     }
 
     private void updateMyLocation(final Location location) {
+
         mLocation = location;
         if (mLocation == null) {
             mLatLng = null;

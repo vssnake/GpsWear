@@ -28,13 +28,15 @@ import java.util.List;
 /**
  * Created by vssnake on 05/12/2014.
  */
-public class LocationManager  implements GpsStatus.Listener, LocationListener,
+public class LocationManager implements GpsStatus.Listener, LocationListener,
         com.google.android.gms.location.LocationListener,
         SensorEventListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{
 
-    public LocationManager(MainPresenter mainPresenter,boolean fusionLocation){
+    public final String TAG = LocationManager.this.getClass().getSimpleName();
+
+    public LocationManager(MainPresenter mainPresenter, boolean fusionLocation){
         this.mMainPresenter = mainPresenter;
         this.mContext = mainPresenter.getContext();
         this.mFusionGps = fusionLocation;
@@ -46,15 +48,20 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
                 .addOnConnectionFailedListener(this)
                 .build();
 
+
+
         mLocationManagerNative =
                 (android.location.LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+
+        mLocationManagerFusion = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(UPDATE_POSITION_MS);
     }
 
     MainPresenter mMainPresenter;
     Context mContext;
     boolean mRunning = false;
 
-    private static final String TAG = "LocationManager";
 
     private boolean mFusionGps = true;
     private static final String FUSIONLOCATION = "fusion";
@@ -90,9 +97,12 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
     }
 
     public boolean initPosition(){
+
         if (mFusionGps || !hasGps()){
+            Log.d(TAG,"onInitPosition Fusion Enabled");
             return initSensorFusionLocation();
         }else{
+            Log.d(TAG,"onInitPosition Native Enabled");
             return initNativeLocation();
         }
     }
@@ -103,9 +113,11 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
         boolean returnStatus = false;
         switch (typeSensorOn){
             case FUSIONLOCATION:
+                Log.d(TAG,"Fusion Disabled");
                 returnStatus = stopSensorFusionLocation();
                 break;
             case NATIVELOCATION:
+                Log.d(TAG,"Native Disabled");
                 returnStatus = stopNativeLocation();
                 break;
         }
@@ -125,7 +137,6 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
 
         mLocationManagerNative.addGpsStatusListener(this);
 
-
         MainPresenter.bus.post(new LocationInitialize()); //Send to bus the initialization of GPS
        // mSensorMagneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
        // mSensorAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -135,6 +146,16 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
 
         return true;
     }
+
+
+    private boolean stopNativeLocation(){
+        mLocationManagerNative.removeUpdates(this);
+        mLocationManagerNative.removeGpsStatusListener(this);
+
+        //mSensorManager.unregisterListener(this);
+        typeSensorOn = "";
+        return true;
+    }
     private boolean initSensorFusionLocation(){
         if(!mGoogleApiClient.isConnected()){
             mGoogleApiClient.connect();
@@ -142,10 +163,7 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
         }
         typeSensorOn = FUSIONLOCATION;
 
-        mLocationManagerFusion = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_POSITION_MS)
-                .setFastestInterval(UPDATE_POSITION_MS-200);
+
 
         LocationServices.FusedLocationApi
                 .requestLocationUpdates(mGoogleApiClient,mLocationManagerFusion,this)
@@ -175,21 +193,6 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
         return true;
     }
 
-    public void sendLastLocation(){
-        if (mLastLocation != null){
-            onLocationChanged(mLastLocation);
-        }
-    }
-
-
-    private boolean stopNativeLocation(){
-        mLocationManagerNative.removeUpdates(this);
-        mLocationManagerNative.removeGpsStatusListener(this);
-
-        //mSensorManager.unregisterListener(this);
-        typeSensorOn = "";
-        return true;
-    }
 
     private boolean stopSensorFusionLocation(){
         if (mGoogleApiClient.isConnected()) {
@@ -200,6 +203,17 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
         typeSensorOn = "";
         return true;
     }
+
+    public void sendLastLocation(){
+        if (mLastLocation != null){
+            onLocationChanged(mLastLocation);
+        }
+    }
+
+
+
+
+
 
     public void addEventInterface(GpsDataChangeHandler event){
         mGpsDataChangeHandlers.add(event);
@@ -219,8 +233,9 @@ public class LocationManager  implements GpsStatus.Listener, LocationListener,
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
+        Log.d(TAG,"onLocationChanged | Lat " + location.getLatitude() + "lng" + location.getLongitude() + " alt " + location.getAltitude());
         for (int i = 0; mGpsDataChangeHandlers.size() > i;i++){
-            mGpsDataChangeHandlers.get(i).onLocationChange(location);
+            mGpsDataChangeHandlers.get(i).onLocationChange(mLastLocation);
         }
     }
 

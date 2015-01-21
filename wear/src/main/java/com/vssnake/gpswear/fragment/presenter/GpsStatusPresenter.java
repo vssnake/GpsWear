@@ -44,6 +44,7 @@ public class GpsStatusPresenter extends BasicPresenter {
 
     public void resume(){
         initGps();
+        mFragment.getSatellites().removeAllViews();
         mLocationHandler = new  LocationManager.GpsDataChangeHandler() {
             @Override
             public void onLocationChange(Location location) {

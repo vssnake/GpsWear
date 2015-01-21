@@ -18,6 +18,43 @@
         android:id="@+id/mp_frame_layout"/>
 
     <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:id="@+id/mp_zoom_out_layout">
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/mp_zoom_out_button"
+            android:layout_weight="50"
+            android:src="@drawable/zoom_out_icon_1"
+            android:scaleType="fitCenter"
+            android:background="@drawable/menu_selector"
+          />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/mp_menu_layout">
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/mp_menu_button"
+            android:layout_weight="50"
+            android:src="@drawable/menu_icon"
+            android:scaleType="fitCenter"
+            android:background="@drawable/menu_selector" />
+    </LinearLayout>
+
+    <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -41,6 +78,12 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:id="@+id/mp_back" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/return_map"
             android:id="@+id/mp_return"
             android:visibility="visible" />
@@ -49,7 +92,7 @@
     <android.support.wearable.view.DismissOverlayView
         android:id="@+id/mp_dismiss_overlay"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent" />
 
 </RelativeLayout>
 

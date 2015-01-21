@@ -1,15 +1,11 @@
 package com.vssnake.gpswear;
 
 import android.app.Activity;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.wearable.view.DismissOverlayView;
 import android.support.wearable.view.GridViewPager;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.WindowInsets;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,8 +13,6 @@ import android.widget.TextView;
 import com.vssnake.gpswear.config.GpsWearApp;
 import com.vssnake.gpswear.fragment.view.GpsStatusFragment;
 import com.vssnake.gpswear.fragment.view.MicroMapFragment;
-
-import java.util.TimerTask;
 
 import javax.inject.Inject;
 
@@ -183,6 +177,11 @@ public class MainActivity extends Activity
 
 
 
+
+
+    }
+    public void changePreviousPage(){
+        mGridViewPager.setCurrentItem(0,0,true);
     }
 
     private void setIndicator(int paramInt)
